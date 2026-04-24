@@ -386,6 +386,98 @@
   ::-webkit-scrollbar-track { background: var(--bg); }
   ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
 
+  /* WATER TRACKER */
+  .water-hero {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 2rem;
+    text-align: center;
+    margin-bottom: 1.5rem;
+  }
+  .water-main-val {
+    font-family: 'DM Serif Display', serif;
+    font-size: 3.5rem;
+    color: var(--accent3);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .water-main-label { font-size: 13px; color: var(--muted); margin-bottom: 1.5rem; }
+  .water-glasses {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 1.5rem;
+  }
+  .glass {
+    width: 40px; height: 48px;
+    border: 2px solid var(--border);
+    border-radius: 4px 4px 8px 8px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.2s;
+    background: var(--surface2);
+  }
+  .glass:hover { border-color: var(--accent3); }
+  .glass.filled { border-color: var(--accent3); }
+  .glass-fill {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 0%;
+    background: rgba(96,200,240,0.35);
+    transition: height 0.3s ease;
+  }
+  .glass.filled .glass-fill { height: 100%; }
+  .glass-label { font-size: 9px; color: var(--muted); text-align: center; margin-top: 3px; }
+  .water-btn-row { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+  .water-btn {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 8px 18px;
+    border-radius: 100px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .water-btn:hover { border-color: var(--accent3); color: var(--accent3); }
+  .water-btn.primary { background: var(--accent3); color: #0f0f0e; border-color: var(--accent3); font-weight: 600; }
+  .water-rules-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
+    margin-bottom: 1.5rem;
+  }
+  .water-rule {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 14px 16px;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+  .water-rule-icon { font-size: 22px; flex-shrink: 0; margin-top: 2px; }
+  .water-rule-title { font-size: 13px; font-weight: 600; margin-bottom: 3px; }
+  .water-rule-body { font-size: 12px; color: var(--muted); line-height: 1.5; }
+  .water-progress-bar {
+    height: 8px;
+    background: var(--surface2);
+    border-radius: 100px;
+    overflow: hidden;
+    margin: 1rem 0 0.4rem;
+  }
+  .water-progress-fill {
+    height: 100%;
+    background: var(--accent3);
+    border-radius: 100px;
+    transition: width 0.4s ease;
+  }
+  .water-progress-label { font-size: 12px; color: var(--muted); display: flex; justify-content: space-between; }
+
   @media (max-width: 600px) {
     .header { padding: 1.25rem; }
     .tabs { padding: 1rem 1.25rem; }
@@ -408,6 +500,7 @@
 <div class="tabs">
   <button class="tab-btn active" onclick="switchTab('plan')">🥗 Plan de Comidas</button>
   <button class="tab-btn" onclick="switchTab('compras')">🛒 Lista de Compras</button>
+  <button class="tab-btn" onclick="switchTab('agua')">💧 Hidratación</button>
   <button class="tab-btn" onclick="switchTab('suplementos')">💊 Suplementación</button>
   <button class="tab-btn" onclick="switchTab('progreso')">📊 Progreso & Objetivo</button>
 </div>
@@ -454,8 +547,9 @@
           </div>
           <div class="meal-detail">
             <div class="options-tabs">
-              <button class="opt-tab active" onclick="switchOpt(this)">Opción A</button>
-              <button class="opt-tab" onclick="switchOpt(this)">Opción B</button>
+              <button class="opt-tab active" onclick="switchOpt(this)">Batido + banana</button>
+              <button class="opt-tab" onclick="switchOpt(this)">Arepa + banana</button>
+              <button class="opt-tab" onclick="switchOpt(this)">Dátiles pre-gym ✦</button>
             </div>
             <div class="option-panel active">
               <ul class="ingredient-list">
@@ -479,6 +573,19 @@
                 <div class="macro-box"><div class="val" style="color:#f09090">16g</div><div class="lbl">Proteína</div></div>
                 <div class="macro-box"><div class="val" style="color:#f0b860">55g</div><div class="lbl">Carbos</div></div>
                 <div class="macro-box"><div class="val" style="color:#b8d860">~360</div><div class="lbl">kcal</div></div>
+              </div>
+            </div>
+            <div class="option-panel">
+              <ul class="ingredient-list">
+                <li><span class="ing-amount">1 scoop (31g)</span><span class="ing-name">Gold Standard Whey con agua</span></li>
+                <li><span class="ing-amount">4-5 unidades (40g)</span><span class="ing-name">Dátiles<span class="ing-note">Recomendados por tu nutricionista para pre/post-entreno — índice glucémico alto, carga glucógeno rápido</span></span></li>
+                <li><span class="ing-amount">3-5g</span><span class="ing-name">Creatina monohidratada</span></li>
+              </ul>
+              <div class="prep-note">Los dátiles son el carbohidrato pre-entreno preferido de tu nutricionista. Más concentrados en azúcares naturales que la banana, ideales para cargar energía en los 30-60 min previos al gym.</div>
+              <div class="option-macros">
+                <div class="macro-box"><div class="val" style="color:#f09090">26g</div><div class="lbl">Proteína</div></div>
+                <div class="macro-box"><div class="val" style="color:#f0b860">38g</div><div class="lbl">Carbos</div></div>
+                <div class="macro-box"><div class="val" style="color:#b8d860">~260</div><div class="lbl">kcal</div></div>
               </div>
             </div>
           </div>
@@ -653,6 +760,7 @@
               <button class="opt-tab" onclick="switchOpt(this)">Merluza + fideos</button>
               <button class="opt-tab" onclick="switchOpt(this)">Bife + papa</button>
               <button class="opt-tab" onclick="switchOpt(this)">Frutos de mar</button>
+              <button class="opt-tab" onclick="switchOpt(this)">Legumbres ✦</button>
             </div>
             <div class="option-panel active">
               <ul class="ingredient-list">
@@ -714,6 +822,21 @@
                 <div class="macro-box"><div class="val" style="color:#b8d860">~580</div><div class="lbl">kcal</div></div>
               </div>
             </div>
+            <div class="option-panel">
+              <ul class="ingredient-list">
+                <li><span class="ing-amount">150g</span><span class="ing-name">Pechuga de pollo a la plancha<span class="ing-note">Fuente animal para complementar la proteína vegetal</span></span></li>
+                <li><span class="ing-amount">1 taza cocida (180g)</span><span class="ing-name">Lentejas, garbanzos o porotos negros<span class="ing-note">Proteína + carbos + fibra — recomendadas por tu nutricionista 2-3 veces/semana</span></span></li>
+                <li><span class="ing-amount">200g</span><span class="ing-name">Espinaca, zapallito o tomate salteados</span></li>
+                <li><span class="ing-amount">1 cda (10ml)</span><span class="ing-name">Aceite de oliva + limón + comino a gusto</span></li>
+              </ul>
+              <div class="prep-note">Las legumbres son la fuente mixta más completa: proteína vegetal + carbos complejos + fibra + hierro. Recomendadas explícitamente por tu nutricionista. Alternálas 2-3 veces por semana con el arroz.</div>
+              <div class="option-macros">
+                <div class="macro-box"><div class="val" style="color:#f09090">52g</div><div class="lbl">Proteína</div></div>
+                <div class="macro-box"><div class="val" style="color:#f0b860">65g</div><div class="lbl">Carbos</div></div>
+                <div class="macro-box"><div class="val" style="color:#90d0f0">12g</div><div class="lbl">Grasas</div></div>
+                <div class="macro-box"><div class="val" style="color:#b8d860">~590</div><div class="lbl">kcal</div></div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -726,7 +849,7 @@
             <div class="meal-icon">🌙</div>
             <div class="meal-info">
               <div class="meal-name">Cena</div>
-              <div class="meal-tagline">Proteína de calidad + carbos moderados</div>
+              <div class="meal-tagline">Proteína de calidad + carbos siempre presentes</div>
               <div class="macro-pills"><span class="pill pill-p">Prot 45g</span><span class="pill pill-c">Carbs 50g</span><span class="pill pill-g">Grasas 12g</span><span class="pill pill-k">~490 kcal</span></div>
             </div>
             <div class="expand-icon">▾</div>
@@ -805,6 +928,7 @@
                 <li><span class="ing-amount">20g</span><span class="ing-name">Almendras o nueces (opcional)<span class="ing-note">Solo si el día fue muy exigente</span></span></li>
               </ul>
               <div class="prep-note">Igual que hacía Brad Pitt con el cottage cheese. La caseína del yogur se digiere lentamente y alimenta los músculos durante las horas de sueño.</div>
+              <div class="prep-note" style="border-left-color:var(--accent);margin-top:8px">Tip post-entreno: reemplazá la banana por 4-5 dátiles cuando llegues del gym. Su índice glucémico más alto repone el glucógeno muscular más rápido que la banana en la ventana anabólica.</div>
             </div>
           </div>
         </div>
@@ -885,6 +1009,7 @@
         <div class="meal-card" onclick="toggleCard(this)">
           <div class="meal-card-header"><div class="meal-icon">⚡</div><div class="meal-info"><div class="meal-name">Pre-entreno</div><div class="meal-tagline">Carga de glucógeno 1h antes del gym</div><div class="macro-pills"><span class="pill pill-p">Prot 28g</span><span class="pill pill-c">Carbs 35g</span><span class="pill pill-k">~260 kcal</span></div></div><div class="expand-icon">▾</div></div>
           <div class="meal-detail">
+            <div class="options-tabs"><button class="opt-tab active" onclick="switchOpt(this)">Batido + banana</button><button class="opt-tab" onclick="switchOpt(this)">Dátiles pre-gym ✦</button></div>
             <div class="option-panel active" style="display:block">
               <ul class="ingredient-list">
                 <li><span class="ing-amount">1 scoop (31g)</span><span class="ing-name">Gold Standard Whey con agua</span></li>
@@ -892,6 +1017,15 @@
                 <li><span class="ing-amount">3-5g</span><span class="ing-name">Creatina monohidratada</span></li>
               </ul>
               <div class="option-macros"><div class="macro-box"><div class="val" style="color:#f09090">28g</div><div class="lbl">Proteína</div></div><div class="macro-box"><div class="val" style="color:#f0b860">35g</div><div class="lbl">Carbos</div></div><div class="macro-box"><div class="val" style="color:#b8d860">~260</div><div class="lbl">kcal</div></div></div>
+            </div>
+            <div class="option-panel">
+              <ul class="ingredient-list">
+                <li><span class="ing-amount">1 scoop (31g)</span><span class="ing-name">Gold Standard Whey con agua</span></li>
+                <li><span class="ing-amount">4-5 unidades (40g)</span><span class="ing-name">Dátiles<span class="ing-note">Recomendados por tu nutricionista — índice glucémico alto, carga glucógeno rápido antes del gym</span></span></li>
+                <li><span class="ing-amount">3-5g</span><span class="ing-name">Creatina monohidratada</span></li>
+              </ul>
+              <div class="prep-note">Los dátiles son el carbohidrato pre-entreno preferido de tu nutricionista. Más concentrados en azúcares naturales que la banana, ideales para los 30-60 min previos al gym.</div>
+              <div class="option-macros"><div class="macro-box"><div class="val" style="color:#f09090">26g</div><div class="lbl">Proteína</div></div><div class="macro-box"><div class="val" style="color:#f0b860">38g</div><div class="lbl">Carbos</div></div><div class="macro-box"><div class="val" style="color:#b8d860">~260</div><div class="lbl">kcal</div></div></div>
             </div>
           </div>
         </div>
@@ -907,7 +1041,7 @@
         <div class="meal-card" onclick="toggleCard(this)">
           <div class="meal-card-header"><div class="meal-icon">🍗</div><div class="meal-info"><div class="meal-name">Post-entreno + Almuerzo</div><div class="meal-tagline">Ventana anabólica — proteína inmediata + comida completa</div><div class="macro-pills"><span class="pill pill-p">Prot 75g</span><span class="pill pill-c">Carbs 80g</span><span class="pill pill-k">~860 kcal</span></div></div><div class="expand-icon">▾</div></div>
           <div class="meal-detail">
-            <div class="options-tabs"><button class="opt-tab active" onclick="switchOpt(this)">Batido + pollo arroz</button><button class="opt-tab" onclick="switchOpt(this)">Batido + merluza fideos</button></div>
+            <div class="options-tabs"><button class="opt-tab active" onclick="switchOpt(this)">Batido + pollo arroz</button><button class="opt-tab" onclick="switchOpt(this)">Batido + merluza fideos</button><button class="opt-tab" onclick="switchOpt(this)">Batido + legumbres ✦</button><button class="opt-tab" onclick="switchOpt(this)">Dátiles post-gym ✦</button></div>
             <div class="option-panel active">
               <ul class="ingredient-list">
                 <li><span class="ing-amount">1 scoop (31g)</span><span class="ing-name">Gold Standard Whey<span class="ing-note">Inmediato post-gym con agua o leche descremada</span></span></li>
@@ -927,6 +1061,28 @@
                 <li><span class="ing-amount">150g</span><span class="ing-name">Tomate cherry + albahaca + 20g parmesano</span></li>
               </ul>
               <div class="option-macros"><div class="macro-box"><div class="val" style="color:#f09090">72g</div><div class="lbl">Proteína</div></div><div class="macro-box"><div class="val" style="color:#f0b860">78g</div><div class="lbl">Carbos</div></div><div class="macro-box"><div class="val" style="color:#b8d860">~820</div><div class="lbl">kcal</div></div></div>
+            </div>
+            <div class="option-panel">
+              <ul class="ingredient-list">
+                <li><span class="ing-amount">1 scoop (31g)</span><span class="ing-name">Gold Standard Whey<span class="ing-note">Inmediato post-gym</span></span></li>
+                <li><span class="ing-amount">150g</span><span class="ing-name">Pechuga de pollo a la plancha<span class="ing-note">Proteína animal para complementar la vegetal</span></span></li>
+                <li><span class="ing-amount">1 taza cocida (180g)</span><span class="ing-name">Lentejas, garbanzos o porotos negros<span class="ing-note">Recomendadas por tu nutricionista — fuente mixta proteína + carbos + fibra + hierro</span></span></li>
+                <li><span class="ing-amount">200g</span><span class="ing-name">Espinaca, zapallito o zanahoria salteados</span></li>
+                <li><span class="ing-amount">1 cda (10ml)</span><span class="ing-name">Aceite de oliva + limón + comino</span></li>
+              </ul>
+              <div class="prep-note">Usá lentejas o garbanzos cocidos. Si usás en lata, enjuagalas bien. Combinadas con el pollo y el batido, completás proteína completa + fibra que el arroz no da. Alterná 2-3 veces por semana.</div>
+              <div class="option-macros"><div class="macro-box"><div class="val" style="color:#f09090">78g</div><div class="lbl">Proteína</div></div><div class="macro-box"><div class="val" style="color:#f0b860">72g</div><div class="lbl">Carbos</div></div><div class="macro-box"><div class="val" style="color:#90d0f0">10g</div><div class="lbl">Grasas</div></div><div class="macro-box"><div class="val" style="color:#b8d860">~830</div><div class="lbl">kcal</div></div></div>
+            </div>
+            <div class="option-panel">
+              <ul class="ingredient-list">
+                <li><span class="ing-amount">1 scoop (31g)</span><span class="ing-name">Gold Standard Whey<span class="ing-note">Inmediato post-gym con agua</span></span></li>
+                <li><span class="ing-amount">4-5 unidades (40g)</span><span class="ing-name">Dátiles<span class="ing-note">Índice glucémico más alto que la banana — reponen glucógeno muscular más rápido. Recomendación de tu nutricionista para pre/post-entreno</span></span></li>
+                <li><span class="ing-amount">200g</span><span class="ing-name">Pechuga de pollo a la plancha</span></li>
+                <li><span class="ing-amount">90g crudo</span><span class="ing-name">Arroz integral (≈230g cocido)</span></li>
+                <li><span class="ing-amount">200g</span><span class="ing-name">Vegetales al vapor o salteados</span></li>
+              </ul>
+              <div class="prep-note">Los dátiles son la opción de carbohidrato rápido post-entreno recomendada por tu nutricionista. Son más efectivos que la banana para la reposición de glucógeno en los primeros 30 min post-gym.</div>
+              <div class="option-macros"><div class="macro-box"><div class="val" style="color:#f09090">76g</div><div class="lbl">Proteína</div></div><div class="macro-box"><div class="val" style="color:#f0b860">82g</div><div class="lbl">Carbos</div></div><div class="macro-box"><div class="val" style="color:#b8d860">~870</div><div class="lbl">kcal</div></div></div>
             </div>
           </div>
         </div>
@@ -1044,7 +1200,7 @@
         <div class="meal-card" onclick="toggleCard(this)">
           <div class="meal-card-header"><div class="meal-icon">🍗</div><div class="meal-info"><div class="meal-name">Almuerzo</div><div class="meal-tagline">Comida principal — proteína + carbos complejos</div><div class="macro-pills"><span class="pill pill-p">Prot 48g</span><span class="pill pill-c">Carbs 70g</span><span class="pill pill-k">~620 kcal</span></div></div><div class="expand-icon">▾</div></div>
           <div class="meal-detail">
-            <div class="options-tabs"><button class="opt-tab active" onclick="switchOpt(this)">Pollo + arroz</button><button class="opt-tab" onclick="switchOpt(this)">Merluza + fideos</button><button class="opt-tab" onclick="switchOpt(this)">Bife + papa</button></div>
+            <div class="options-tabs"><button class="opt-tab active" onclick="switchOpt(this)">Pollo + arroz</button><button class="opt-tab" onclick="switchOpt(this)">Merluza + fideos</button><button class="opt-tab" onclick="switchOpt(this)">Bife + papa</button><button class="opt-tab" onclick="switchOpt(this)">Legumbres ✦</button></div>
             <div class="option-panel active">
               <ul class="ingredient-list">
                 <li><span class="ing-amount">200g</span><span class="ing-name">Pechuga de pollo a la plancha</span></li>
@@ -1070,6 +1226,16 @@
                 <li><span class="ing-amount">½ palta (60g)</span><span class="ing-name">Palta en ensalada con rúcula y tomate</span></li>
               </ul>
               <div class="option-macros"><div class="macro-box"><div class="val" style="color:#f09090">45g</div><div class="lbl">Proteína</div></div><div class="macro-box"><div class="val" style="color:#f0b860">55g</div><div class="lbl">Carbos</div></div><div class="macro-box"><div class="val" style="color:#90d0f0">22g</div><div class="lbl">Grasas</div></div><div class="macro-box"><div class="val" style="color:#b8d860">~610</div><div class="lbl">kcal</div></div></div>
+            </div>
+            <div class="option-panel">
+              <ul class="ingredient-list">
+                <li><span class="ing-amount">150g</span><span class="ing-name">Pechuga de pollo a la plancha<span class="ing-note">Proteína animal para completar el perfil aminoacídico</span></span></li>
+                <li><span class="ing-amount">1 taza cocida (180g)</span><span class="ing-name">Lentejas, garbanzos o porotos negros<span class="ing-note">Recomendadas por tu nutricionista — fuente mixta proteína + carbos + fibra + hierro</span></span></li>
+                <li><span class="ing-amount">200g</span><span class="ing-name">Espinaca, zapallito o zanahoria salteados</span></li>
+                <li><span class="ing-amount">1 cda (10ml)</span><span class="ing-name">Aceite de oliva + limón + comino</span></li>
+              </ul>
+              <div class="prep-note">Usá lentejas o garbanzos cocidos. Si usás en lata, enjuagalas bien. Combinadas con el pollo completás proteína completa + fibra que el arroz no da. Alterná 2-3 veces por semana en reemplazo del arroz.</div>
+              <div class="option-macros"><div class="macro-box"><div class="val" style="color:#f09090">52g</div><div class="lbl">Proteína</div></div><div class="macro-box"><div class="val" style="color:#f0b860">65g</div><div class="lbl">Carbos</div></div><div class="macro-box"><div class="val" style="color:#90d0f0">12g</div><div class="lbl">Grasas</div></div><div class="macro-box"><div class="val" style="color:#b8d860">~590</div><div class="lbl">kcal</div></div></div>
             </div>
           </div>
         </div>
@@ -1099,6 +1265,7 @@
         <div class="meal-card" onclick="toggleCard(this)">
           <div class="meal-card-header"><div class="meal-icon">⚡</div><div class="meal-info"><div class="meal-name">Pre-entreno</div><div class="meal-tagline">1h antes del gym nocturno</div><div class="macro-pills"><span class="pill pill-p">Prot 28g</span><span class="pill pill-c">Carbs 35g</span><span class="pill pill-k">~260 kcal</span></div></div><div class="expand-icon">▾</div></div>
           <div class="meal-detail">
+            <div class="options-tabs"><button class="opt-tab active" onclick="switchOpt(this)">Batido + banana</button><button class="opt-tab" onclick="switchOpt(this)">Dátiles pre-gym ✦</button></div>
             <div class="option-panel active" style="display:block">
               <ul class="ingredient-list">
                 <li><span class="ing-amount">1 scoop (31g)</span><span class="ing-name">Gold Standard Whey con agua o leche</span></li>
@@ -1106,6 +1273,15 @@
                 <li><span class="ing-amount">3-5g</span><span class="ing-name">Creatina monohidratada</span></li>
               </ul>
               <div class="option-macros"><div class="macro-box"><div class="val" style="color:#f09090">28g</div><div class="lbl">Proteína</div></div><div class="macro-box"><div class="val" style="color:#f0b860">35g</div><div class="lbl">Carbos</div></div><div class="macro-box"><div class="val" style="color:#b8d860">~260</div><div class="lbl">kcal</div></div></div>
+            </div>
+            <div class="option-panel">
+              <ul class="ingredient-list">
+                <li><span class="ing-amount">1 scoop (31g)</span><span class="ing-name">Gold Standard Whey con agua</span></li>
+                <li><span class="ing-amount">4-5 unidades (40g)</span><span class="ing-name">Dátiles<span class="ing-note">Recomendados por tu nutricionista para pre/post-entreno — índice glucémico alto, carga glucógeno rápido</span></span></li>
+                <li><span class="ing-amount">3-5g</span><span class="ing-name">Creatina monohidratada</span></li>
+              </ul>
+              <div class="prep-note">Los dátiles son el carbohidrato pre-entreno preferido de tu nutricionista. Más concentrados en azúcares naturales que la banana, ideales para los 30-60 min previos al gym.</div>
+              <div class="option-macros"><div class="macro-box"><div class="val" style="color:#f09090">26g</div><div class="lbl">Proteína</div></div><div class="macro-box"><div class="val" style="color:#f0b860">38g</div><div class="lbl">Carbos</div></div><div class="macro-box"><div class="val" style="color:#b8d860">~260</div><div class="lbl">kcal</div></div></div>
             </div>
           </div>
         </div>
@@ -1121,7 +1297,7 @@
         <div class="meal-card" onclick="toggleCard(this)">
           <div class="meal-card-header"><div class="meal-icon">🌙</div><div class="meal-info"><div class="meal-name">Post-entreno + Cena</div><div class="meal-tagline">Ventana anabólica nocturna — INCLUIR carbos sí o sí</div><div class="macro-pills"><span class="pill pill-p">Prot 72g</span><span class="pill pill-c">Carbs 75g</span><span class="pill pill-k">~830 kcal</span></div></div><div class="expand-icon">▾</div></div>
           <div class="meal-detail">
-            <div class="options-tabs"><button class="opt-tab active" onclick="switchOpt(this)">Batido + pollo</button><button class="opt-tab" onclick="switchOpt(this)">Batido + merluza</button></div>
+            <div class="options-tabs"><button class="opt-tab active" onclick="switchOpt(this)">Batido + pollo</button><button class="opt-tab" onclick="switchOpt(this)">Batido + merluza</button><button class="opt-tab" onclick="switchOpt(this)">Dátiles post-gym ✦</button></div>
             <div class="option-panel active">
               <ul class="ingredient-list">
                 <li><span class="ing-amount">1 scoop (31g)</span><span class="ing-name">Gold Standard Whey<span class="ing-note">Inmediato post-gym — no esperar más de 30 min</span></span></li>
@@ -1142,9 +1318,115 @@
               </ul>
               <div class="option-macros"><div class="macro-box"><div class="val" style="color:#f09090">72g</div><div class="lbl">Proteína</div></div><div class="macro-box"><div class="val" style="color:#f0b860">70g</div><div class="lbl">Carbos</div></div><div class="macro-box"><div class="val" style="color:#b8d860">~780</div><div class="lbl">kcal</div></div></div>
             </div>
+            <div class="option-panel">
+              <ul class="ingredient-list">
+                <li><span class="ing-amount">1 scoop (31g)</span><span class="ing-name">Gold Standard Whey<span class="ing-note">Inmediato post-gym con agua</span></span></li>
+                <li><span class="ing-amount">4-5 unidades (40g)</span><span class="ing-name">Dátiles<span class="ing-note">Recomendados por tu nutricionista — índice glucémico alto, reponen glucógeno más rápido que la banana</span></span></li>
+                <li><span class="ing-amount">200g</span><span class="ing-name">Pollo al horno</span></li>
+                <li><span class="ing-amount">150g</span><span class="ing-name">Papa o batata al horno</span></li>
+                <li><span class="ing-amount">200g</span><span class="ing-name">Vegetales al vapor</span></li>
+              </ul>
+              <div class="prep-note">Los dátiles son la opción de carbohidrato rápido post-entreno recomendada por tu nutricionista. Más efectivos que la banana para reponer glucógeno en los primeros 30 min post-gym.</div>
+              <div class="option-macros"><div class="macro-box"><div class="val" style="color:#f09090">74g</div><div class="lbl">Proteína</div></div><div class="macro-box"><div class="val" style="color:#f0b860">78g</div><div class="lbl">Carbos</div></div><div class="macro-box"><div class="val" style="color:#b8d860">~840</div><div class="lbl">kcal</div></div></div>
+            </div>
           </div>
         </div>
       </div>
+    </div>
+  </div>
+</div>
+
+<!-- AGUA TAB -->
+<div id="tab-agua" class="content">
+  <div class="section-heading">Hidratación diaria</div>
+
+  <div class="water-hero">
+    <div class="water-main-val" id="waterLiters">0.0</div>
+    <div class="water-main-label">litros tomados hoy de <strong style="color:var(--accent3)">2.4L base</strong> (+ 0.5L por cada hora de entreno intenso)</div>
+    <div class="water-progress-bar"><div class="water-progress-fill" id="waterBar" style="width:0%"></div></div>
+    <div class="water-progress-label"><span id="waterPct">0%</span><span>Meta: <span id="waterGoalLabel">2.4L</span></span></div>
+    <div class="water-glasses" id="glassesContainer"></div>
+    <div class="water-btn-row">
+      <button class="water-btn primary" onclick="addGlass()">+ Agregar vaso (250ml)</button>
+      <button class="water-btn" onclick="setGoal(2.4)">Meta base 2.4L</button>
+      <button class="water-btn" onclick="setGoal(2.9)">+ 1h gym → 2.9L</button>
+      <button class="water-btn" onclick="setGoal(3.4)">+ Running → 3.4L</button>
+      <button class="water-btn" onclick="resetWater()">Reiniciar</button>
+    </div>
+  </div>
+
+  <div class="section-heading" style="font-size:1.1rem;margin-bottom:1rem">Reglas de hidratación</div>
+  <div class="water-rules-grid">
+    <div class="water-rule">
+      <div class="water-rule-icon">🌅</div>
+      <div>
+        <div class="water-rule-title">Al despertar</div>
+        <div class="water-rule-body">300ml de agua antes del mate o café. Reponés lo que perdiste durante el sueño y activás el metabolismo.</div>
+      </div>
+    </div>
+    <div class="water-rule">
+      <div class="water-rule-icon">🏋️</div>
+      <div>
+        <div class="water-rule-title">Durante el gym</div>
+        <div class="water-rule-body">500-700ml por sesión. En sesiones de más de 60 min: agua + pizca de sal + jugo de ½ limón como electrolitos naturales.</div>
+      </div>
+    </div>
+    <div class="water-rule">
+      <div class="water-rule-icon">🏃</div>
+      <div>
+        <div class="water-rule-title">Días de running</div>
+        <div class="water-rule-body">Sumá 500-1000ml adicionales a tu meta base. En 10-15km perdés hasta 1.5L de sudor. Meta total esos días: 3.2-3.5L.</div>
+      </div>
+    </div>
+    <div class="water-rule">
+      <div class="water-rule-icon">🍽️</div>
+      <div>
+        <div class="water-rule-title">Con las comidas</div>
+        <div class="water-rule-body">200-300ml con cada comida principal. Ayuda a la digestión y a que la fibra de las legumbres y avena funcione bien.</div>
+      </div>
+    </div>
+    <div class="water-rule">
+      <div class="water-rule-icon">🌙</div>
+      <div>
+        <div class="water-rule-title">Antes de dormir</div>
+        <div class="water-rule-body">1 vaso (250ml) antes de acostarte, pero evitá grandes volúmenes en los 30 minutos previos para no interrumpir el sueño.</div>
+      </div>
+    </div>
+    <div class="water-rule">
+      <div class="water-rule-icon">⚠️</div>
+      <div>
+        <div class="water-rule-title">Señales de deshidratación</div>
+        <div class="water-rule-body">Orina oscura, dolor de cabeza, fatiga prematura en el entreno o calambres musculares son señales claras de que necesitás más agua.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-heading" style="font-size:1.1rem;margin-bottom:0.75rem;margin-top:1.5rem">Meta según el día</div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px">
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px;text-align:center">
+      <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px">Día sin entreno</div>
+      <div style="font-size:24px;font-weight:600;color:var(--accent3)">2.4L</div>
+      <div style="font-size:11px;color:var(--muted);margin-top:4px">10 vasos de 250ml</div>
+    </div>
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px;text-align:center">
+      <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px">Día de gym (1h)</div>
+      <div style="font-size:24px;font-weight:600;color:var(--accent3)">2.9L</div>
+      <div style="font-size:11px;color:var(--muted);margin-top:4px">Base + 500ml gym</div>
+    </div>
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px;text-align:center">
+      <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px">Gym (1.5h+)</div>
+      <div style="font-size:24px;font-weight:600;color:var(--accent3)">3.1L</div>
+      <div style="font-size:11px;color:var(--muted);margin-top:4px">Base + 700ml gym</div>
+    </div>
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px;text-align:center">
+      <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px">Día de running</div>
+      <div style="font-size:24px;font-weight:600;color:var(--accent)">3.5L</div>
+      <div style="font-size:11px;color:var(--muted);margin-top:4px">Base + 1.1L running</div>
+    </div>
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px;text-align:center">
+      <div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px">Gym + running</div>
+      <div style="font-size:24px;font-weight:600;color:var(--accent)">4.0L</div>
+      <div style="font-size:11px;color:var(--muted);margin-top:4px">Día de máxima demanda</div>
     </div>
   </div>
 </div>
@@ -1251,7 +1533,7 @@
 function switchTab(tab) {
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
   document.querySelectorAll('.content').forEach(c => c.classList.remove('active'));
-  event.target.classList.add('active');
+  event.currentTarget.classList.add('active');
   document.getElementById('tab-' + tab).classList.add('active');
 }
 
@@ -1284,7 +1566,8 @@ const shopData = [
   { cat: '🥩 Carnicería', color: '#f06060', items: ['Pechuga de pollo (1kg/semana)', 'Muslo de pollo sin piel (500g)', 'Bife de lomo o nalga (600g)', 'Peceto (500g)', 'Lomito magro (250g)', 'Carne picada magra (500g)'] },
   { cat: '🐟 Pescadería', color: '#60c8f0', items: ['Merluza fresca en filetes (800g)', 'Mejillones frescos (500g)', 'Mix frutos de mar (400g)', 'Jurel o caballa fresca (400g)'] },
   { cat: '🥦 Verdulería', color: '#c8f060', items: ['Brócoli (500g)', 'Zapallitos (500g)', 'Espinaca (300g)', 'Rúcula (200g)', 'Lechuga (1 planta)', 'Tomates cherry (500g)', 'Hongos frescos (300g)', 'Palta (4-6 unidades)', 'Banana (1 docena)', 'Naranja (1kg)', 'Manzana (6 unidades)', 'Frutillas o arándanos (300g)', 'Papa (1kg)', 'Batata (500g)', 'Albahaca fresca (1 planta)', 'Ajo (1 cabeza)'] },
-  { cat: '🛒 Supermercado', color: '#f0a030', items: ['Harina de maíz precocida (1kg)', 'Arroz integral (1kg)', 'Fideos integrales (500g)', 'Avena arrollada (500g)', 'Pan lactal integral (1 paquete)', 'Huevos (2 docenas)', 'Claras de huevo en caja (1L)', 'Yogur griego natural (1kg)', 'Yogur descremado natural (4 potes 200g)', 'Leche descremada (1L)', 'Queso tybo (200g)', 'Queso port salut light (200g)', 'Queso parmesano (100g)', 'Muzzarela light (200g)', 'Atún al natural en lata (6 unidades)', 'Aceite de oliva extra virgen (500ml)', 'Almendras (200g)', 'Nueces (200g)', 'Maní sin sal (200g)', 'Semillas de chía (200g)', 'Semillas de lino (200g)', 'Gold Standard Whey ON (1kg)', 'Creatina monohidratada (300g)', 'Aceite de coco (250ml) — para granola', 'Miel (250g) — para granola'] }
+  { cat: '🫘 Legumbres', color: '#c8f060', items: ['Lentejas secas (500g)', 'Garbanzos secos o en lata (500g)', 'Porotos negros en lata (3 latas)', 'Porotos blancos en lata (2 latas)'] },
+  { cat: '🛒 Supermercado', color: '#f0a030', items: ['Harina de maíz precocida (1kg)', 'Arroz integral (1kg)', 'Fideos integrales (500g)', 'Avena arrollada (500g)', 'Pan lactal integral (1 paquete)', 'Huevos (2 docenas)', 'Claras de huevo en caja (1L)', 'Yogur griego natural (1kg)', 'Yogur descremado natural (4 potes 200g)', 'Leche descremada (1L)', 'Queso tybo (200g)', 'Queso port salut light (200g)', 'Queso parmesano (100g)', 'Muzzarela light (200g)', 'Atún al natural en lata (6 unidades)', 'Aceite de oliva extra virgen (500ml)', 'Almendras (200g)', 'Nueces (200g)', 'Maní sin sal (200g)', 'Semillas de chía (200g)', 'Semillas de lino (200g)', 'Dátiles (200g) — post-entreno', 'Gold Standard Whey ON (1kg)', 'Creatina monohidratada (300g)', 'Aceite de coco (250ml) — para granola', 'Miel (250g) — para granola', 'Agua mineral o botellón (5L)'] }
 ];
 
 const grid = document.getElementById('shopGrid');
@@ -1295,6 +1578,47 @@ shopData.forEach(cat => {
     cat.items.map(item => `<div class="shop-item" onclick="this.classList.toggle('checked')"><div class="shop-check"></div><span class="shop-name">${item}</span></div>`).join('');
   grid.appendChild(card);
 });
+
+// WATER TRACKER
+let waterGoal = 2.4;
+let glassCount = 0;
+const totalGlasses = () => Math.round(waterGoal / 0.25);
+
+function buildGlasses() {
+  const c = document.getElementById('glassesContainer');
+  c.innerHTML = '';
+  const n = totalGlasses();
+  for (let i = 0; i < n; i++) {
+    const wrap = document.createElement('div');
+    wrap.style.textAlign = 'center';
+    const g = document.createElement('div');
+    g.className = 'glass' + (i < glassCount ? ' filled' : '');
+    g.innerHTML = '<div class="glass-fill"></div>';
+    g.onclick = () => { glassCount = i + 1; updateWater(); };
+    const lbl = document.createElement('div');
+    lbl.className = 'glass-label';
+    lbl.textContent = (i + 1) * 250 + 'ml';
+    wrap.appendChild(g);
+    wrap.appendChild(lbl);
+    c.appendChild(wrap);
+  }
+}
+
+function updateWater() {
+  const liters = (glassCount * 0.25).toFixed(1);
+  const pct = Math.min(100, Math.round((glassCount / totalGlasses()) * 100));
+  document.getElementById('waterLiters').textContent = liters;
+  document.getElementById('waterBar').style.width = pct + '%';
+  document.getElementById('waterPct').textContent = pct + '%';
+  document.getElementById('waterGoalLabel').textContent = waterGoal.toFixed(1) + 'L';
+  buildGlasses();
+}
+
+function addGlass() { if (glassCount < totalGlasses()) { glassCount++; updateWater(); } }
+function resetWater() { glassCount = 0; updateWater(); }
+function setGoal(g) { waterGoal = g; if (glassCount > totalGlasses()) glassCount = totalGlasses(); updateWater(); }
+
+buildGlasses();
 </script>
 </body>
 </html>
