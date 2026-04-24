@@ -1,0 +1,1300 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Plan Nutricional — Simón</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0f0f0e;
+    --surface: #1a1a18;
+    --surface2: #222220;
+    --border: #2e2e2b;
+    --accent: #c8f060;
+    --accent2: #f0a030;
+    --accent3: #60c8f0;
+    --text: #f0ede8;
+    --muted: #8a887f;
+    --tag-protein: #f06060;
+    --tag-carbs: #f0a030;
+    --tag-fat: #60c8f0;
+    --tag-kcal: #c8f060;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  /* HEADER */
+  .header {
+    padding: 2rem 2rem 1.5rem;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+  .header-logo {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.6rem;
+    color: var(--accent);
+    letter-spacing: -0.02em;
+  }
+  .header-sub { font-size: 12px; color: var(--muted); margin-top: 2px; letter-spacing: 0.05em; text-transform: uppercase; }
+
+  /* TABS */
+  .tabs {
+    display: flex;
+    gap: 4px;
+    padding: 1.25rem 2rem;
+    border-bottom: 1px solid var(--border);
+    overflow-x: auto;
+  }
+  .tab-btn {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    padding: 7px 16px;
+    border-radius: 100px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.2s;
+  }
+  .tab-btn:hover { border-color: var(--accent); color: var(--text); }
+  .tab-btn.active { background: var(--accent); color: #0f0f0e; border-color: var(--accent); font-weight: 600; }
+
+  /* CONTENT */
+  .content { display: none; padding: 2rem; max-width: 1100px; }
+  .content.active { display: block; }
+
+  /* SCHEDULE SWITCHER */
+  .schedule-bar {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+  }
+  .sched-btn {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--muted);
+    padding: 10px 18px;
+    border-radius: 10px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .sched-btn:hover { border-color: var(--accent2); color: var(--text); }
+  .sched-btn.active { background: var(--surface2); border-color: var(--accent2); color: var(--text); }
+  .sched-btn .sched-icon { font-size: 18px; }
+  .sched-btn .sched-label { font-weight: 500; }
+  .sched-btn .sched-sub { font-size: 11px; color: var(--muted); display: block; }
+
+  /* TIMELINE */
+  .timeline { display: none; }
+  .timeline.active { display: block; }
+  .meal-row {
+    display: grid;
+    grid-template-columns: 90px 1fr;
+    gap: 0;
+    margin-bottom: 0;
+  }
+  .meal-time-col {
+    padding: 0 1.5rem 0 0;
+    text-align: right;
+    position: relative;
+  }
+  .meal-time-col::after {
+    content: '';
+    position: absolute;
+    right: -1px;
+    top: 20px;
+    bottom: -20px;
+    width: 1px;
+    background: var(--border);
+  }
+  .meal-row:last-child .meal-time-col::after { display: none; }
+  .meal-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: var(--accent);
+    position: absolute;
+    right: -5px;
+    top: 18px;
+  }
+  .meal-dot.orange { background: var(--accent2); }
+  .meal-dot.blue { background: var(--accent3); }
+  .meal-dot.red { background: var(--tag-protein); }
+  .time-label { font-size: 12px; color: var(--muted); padding-top: 14px; }
+  .meal-card-col { padding: 0 0 2.5rem 1.5rem; }
+
+  /* MEAL CARD */
+  .meal-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: border-color 0.2s, transform 0.15s;
+  }
+  .meal-card:hover { border-color: #4a4a44; transform: translateY(-1px); }
+  .meal-card.expanded { border-color: var(--accent); }
+  .meal-card-header {
+    display: flex;
+    align-items: center;
+    padding: 14px 18px;
+    gap: 12px;
+  }
+  .meal-icon { font-size: 22px; flex-shrink: 0; }
+  .meal-info { flex: 1; }
+  .meal-name { font-weight: 600; font-size: 14px; margin-bottom: 2px; }
+  .meal-tagline { font-size: 12px; color: var(--muted); }
+  .macro-pills { display: flex; gap: 5px; flex-wrap: wrap; margin-top: 8px; }
+  .pill {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 9px;
+    border-radius: 100px;
+    letter-spacing: 0.02em;
+  }
+  .pill-p { background: rgba(240,96,96,0.15); color: #f09090; }
+  .pill-c { background: rgba(240,160,48,0.15); color: #f0b860; }
+  .pill-g { background: rgba(96,200,240,0.15); color: #90d0f0; }
+  .pill-k { background: rgba(200,240,96,0.15); color: #b8d860; }
+  .expand-icon { color: var(--muted); font-size: 18px; transition: transform 0.2s; flex-shrink: 0; }
+  .meal-card.expanded .expand-icon { transform: rotate(180deg); }
+
+  /* MEAL DETAIL */
+  .meal-detail {
+    display: none;
+    border-top: 1px solid var(--border);
+  }
+  .meal-card.expanded .meal-detail { display: block; }
+  .options-tabs {
+    display: flex;
+    gap: 4px;
+    padding: 12px 18px 0;
+    border-bottom: 1px solid var(--border);
+    overflow-x: auto;
+  }
+  .opt-tab {
+    background: none;
+    border: none;
+    color: var(--muted);
+    padding: 6px 12px 10px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .opt-tab:hover { color: var(--text); }
+  .opt-tab.active { color: var(--accent); border-bottom-color: var(--accent); font-weight: 600; }
+  .option-panel { display: none; padding: 16px 18px; }
+  .option-panel.active { display: block; }
+  .ingredient-list { list-style: none; }
+  .ingredient-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 14px;
+  }
+  .ingredient-list li:last-child { border-bottom: none; }
+  .ing-amount {
+    font-weight: 600;
+    color: var(--accent);
+    min-width: 80px;
+    font-size: 13px;
+    flex-shrink: 0;
+  }
+  .ing-name { color: var(--text); }
+  .ing-note { font-size: 12px; color: var(--muted); display: block; }
+  .prep-note {
+    background: var(--surface2);
+    border-left: 3px solid var(--accent2);
+    border-radius: 0 8px 8px 0;
+    padding: 10px 14px;
+    margin-top: 12px;
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+  .option-macros {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+    flex-wrap: wrap;
+  }
+  .macro-box {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 14px;
+    text-align: center;
+    min-width: 70px;
+  }
+  .macro-box .val { font-size: 16px; font-weight: 600; }
+  .macro-box .lbl { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; margin-top: 1px; }
+
+  /* SUPPLEMENT BADGE */
+  .supp-note {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 14px;
+    margin-top: 10px;
+    font-size: 13px;
+    color: var(--accent3);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  /* STATS BAR */
+  .stats-bar {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 10px;
+    margin-bottom: 2rem;
+    padding: 1.25rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+  }
+  .stat-item { text-align: center; }
+  .stat-val { font-size: 22px; font-weight: 600; font-family: 'DM Serif Display', serif; }
+  .stat-val.green { color: var(--accent); }
+  .stat-val.orange { color: var(--accent2); }
+  .stat-val.blue { color: var(--accent3); }
+  .stat-val.red { color: var(--tag-protein); }
+  .stat-lbl { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; margin-top: 2px; }
+
+  /* SHOPPING LIST */
+  .shop-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+  }
+  .shop-cat {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 16px;
+  }
+  .shop-cat-title {
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .shop-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 7px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+    cursor: pointer;
+    transition: color 0.15s;
+  }
+  .shop-item:last-child { border-bottom: none; }
+  .shop-item:hover { color: var(--accent); }
+  .shop-check {
+    width: 16px; height: 16px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s;
+  }
+  .shop-item.checked .shop-check { background: var(--accent); border-color: var(--accent); }
+  .shop-item.checked .shop-check::after { content: '✓'; font-size: 10px; color: #0f0f0e; font-weight: 700; }
+  .shop-item.checked .shop-name { text-decoration: line-through; color: var(--muted); }
+
+  /* PROGRESS */
+  .progress-section { margin-bottom: 2rem; }
+  .progress-title { font-family: 'DM Serif Display', serif; font-size: 1.3rem; margin-bottom: 1rem; }
+  .body-compare {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 1.5rem;
+  }
+  .compare-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 16px;
+  }
+  .compare-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); margin-bottom: 10px; }
+  .compare-item { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid var(--border); font-size: 13px; }
+  .compare-item:last-child { border-bottom: none; }
+  .compare-item .key { color: var(--muted); }
+  .compare-item .val-now { font-weight: 500; }
+  .compare-item .val-target { color: var(--accent); font-weight: 500; }
+
+  /* SUPPS */
+  .supp-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 16px;
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    margin-bottom: 10px;
+  }
+  .supp-badge { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+  .supp-title { font-weight: 600; font-size: 14px; margin-bottom: 3px; }
+  .supp-detail { font-size: 13px; color: var(--muted); }
+  .supp-timing { font-size: 12px; color: var(--accent2); margin-top: 4px; font-weight: 500; }
+  .badge-new { background: var(--accent); color: #0f0f0e; font-size: 10px; font-weight: 700; padding: 1px 7px; border-radius: 100px; margin-left: 6px; vertical-align: middle; }
+
+  /* SECTION HEADING */
+  .section-heading {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.4rem;
+    margin-bottom: 1.25rem;
+    color: var(--text);
+  }
+  .section-sub { font-size: 13px; color: var(--muted); margin-top: -0.75rem; margin-bottom: 1.25rem; }
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+  @media (max-width: 600px) {
+    .header { padding: 1.25rem; }
+    .tabs { padding: 1rem 1.25rem; }
+    .content { padding: 1.25rem; }
+    .meal-row { grid-template-columns: 70px 1fr; }
+    .body-compare { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div>
+    <div class="header-logo">Simón / Plan Nutricional</div>
+    <div class="header-sub">Objetivo: Brad Pitt Fight Club — 76 kg · 7-8% grasa</div>
+  </div>
+  <div style="font-size:12px;color:var(--muted);">Actualizado Abril 2026</div>
+</div>
+
+<div class="tabs">
+  <button class="tab-btn active" onclick="switchTab('plan')">🥗 Plan de Comidas</button>
+  <button class="tab-btn" onclick="switchTab('compras')">🛒 Lista de Compras</button>
+  <button class="tab-btn" onclick="switchTab('suplementos')">💊 Suplementación</button>
+  <button class="tab-btn" onclick="switchTab('progreso')">📊 Progreso & Objetivo</button>
+</div>
+
+<!-- PLAN TAB -->
+<div id="tab-plan" class="content active">
+  <div class="stats-bar">
+    <div class="stat-item"><div class="stat-val green">3.200</div><div class="stat-lbl">kcal/día</div></div>
+    <div class="stat-item"><div class="stat-val red">155g</div><div class="stat-lbl">Proteína</div></div>
+    <div class="stat-item"><div class="stat-val orange">310g</div><div class="stat-lbl">Carbohidratos</div></div>
+    <div class="stat-item"><div class="stat-val blue">85g</div><div class="stat-lbl">Grasas</div></div>
+    <div class="stat-item"><div class="stat-val" style="color:var(--muted)">6</div><div class="stat-lbl">Comidas</div></div>
+  </div>
+
+  <div class="schedule-bar">
+    <button class="sched-btn active" onclick="switchSchedule('7am')">
+      <span class="sched-icon">🌅</span>
+      <span><span class="sched-label">Gym 7am</span><span class="sched-sub">Mañana temprano</span></span>
+    </button>
+    <button class="sched-btn" onclick="switchSchedule('1pm')">
+      <span class="sched-icon">☀️</span>
+      <span><span class="sched-label">Gym 13pm</span><span class="sched-sub">Mediodía</span></span>
+    </button>
+    <button class="sched-btn" onclick="switchSchedule('9pm')">
+      <span class="sched-icon">🌙</span>
+      <span><span class="sched-label">Gym 21pm</span><span class="sched-sub">Noche (tu horario habitual)</span></span>
+    </button>
+  </div>
+
+  <!-- SCHEDULE 7AM -->
+  <div id="sched-7am" class="timeline active">
+    <div class="meal-row">
+      <div class="meal-time-col"><span class="time-label">6:00</span><div class="meal-dot blue"></div></div>
+      <div class="meal-card-col">
+        <div class="meal-card" onclick="toggleCard(this)">
+          <div class="meal-card-header">
+            <div class="meal-icon">⚡</div>
+            <div class="meal-info">
+              <div class="meal-name">Pre-entreno</div>
+              <div class="meal-tagline">Carga rápida antes del gym</div>
+              <div class="macro-pills"><span class="pill pill-p">Prot 28g</span><span class="pill pill-c">Carbs 35g</span><span class="pill pill-k">~260 kcal</span></div>
+            </div>
+            <div class="expand-icon">▾</div>
+          </div>
+          <div class="meal-detail">
+            <div class="options-tabs">
+              <button class="opt-tab active" onclick="switchOpt(this)">Opción A</button>
+              <button class="opt-tab" onclick="switchOpt(this)">Opción B</button>
+            </div>
+            <div class="option-panel active">
+              <ul class="ingredient-list">
+                <li><span class="ing-amount">1 scoop (31g)</span><span class="ing-name">Gold Standard Whey<span class="ing-note">24g proteína · mezclado con agua o leche descremada</span></span></li>
+                <li><span class="ing-amount">1 banana (120g)</span><span class="ing-name">Banana mediana<span class="ing-note">Carbohidrato de rápida absorción para el entreno</span></span></li>
+                <li><span class="ing-amount">3-5g</span><span class="ing-name">Creatina monohidratada<span class="ing-note">Disolver en agua o en el batido</span></span></li>
+              </ul>
+              <div class="option-macros">
+                <div class="macro-box"><div class="val" style="color:#f09090">28g</div><div class="lbl">Proteína</div></div>
+                <div class="macro-box"><div class="val" style="color:#f0b860">35g</div><div class="lbl">Carbos</div></div>
+                <div class="macro-box"><div class="val" style="color:#b8d860">~260</div><div class="lbl">kcal</div></div>
+              </div>
+            </div>
+            <div class="option-panel">
+              <ul class="ingredient-list">
+                <li><span class="ing-amount">1 arepa (50g)</span><span class="ing-name">Arepa de maíz<span class="ing-note">Harina de maíz precocida</span></span></li>
+                <li><span class="ing-amount">30g</span><span class="ing-name">Queso tybo<span class="ing-note">Relleno de la arepa</span></span></li>
+                <li><span class="ing-amount">1 banana (120g)</span><span class="ing-name">Banana</span></li>
+              </ul>
+              <div class="option-macros">
+                <div class="macro-box"><div class="val" style="color:#f09090">16g</div><div class="lbl">Proteína</div></div>
+                <div class="macro-box"><div class="val" style="color:#f0b860">55g</div><div class="lbl">Carbos</div></div>
+                <div class="macro-box"><div class="val" style="color:#b8d860">~360</div><div class="lbl">kcal</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="meal-row">
+      <div class="meal-time-col"><span class="time-label">7:00</span><div class="meal-dot orange"></div></div>
+      <div class="meal-card-col">
+        <div class="meal-card" onclick="toggleCard(this)">
+          <div class="meal-card-header">
+            <div class="meal-icon">🏋️</div>
+            <div class="meal-info"><div class="meal-name">ENTRENO</div><div class="meal-tagline">Gym — pecho / espalda / hombros / etc.</div></div>
+            <div class="expand-icon">▾</div>
+          </div>
+          <div class="meal-detail">
+            <div class="option-panel active" style="display:block">
+              <div class="prep-note">Hidratación durante el entreno: 500-700ml agua. En sesiones de más de 60 min agregá una pizca de sal + jugo de limón como electrolitos naturales.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="meal-row">
+      <div class="meal-time-col"><span class="time-label">8:30</span><div class="meal-dot"></div></div>
+      <div class="meal-card-col">
+        <div class="meal-card" onclick="toggleCard(this)">
+          <div class="meal-card-header">
+            <div class="meal-icon">🍳</div>
+            <div class="meal-info">
+              <div class="meal-name">Post-entreno + Desayuno</div>
+              <div class="meal-tagline">Ventana anabólica — comida más importante del día</div>
+              <div class="macro-pills"><span class="pill pill-p">Prot 55g</span><span class="pill pill-c">Carbs 80g</span><span class="pill pill-g">Grasas 18g</span><span class="pill pill-k">~700 kcal</span></div>
+            </div>
+            <div class="expand-icon">▾</div>
+          </div>
+          <div class="meal-detail">
+            <div class="options-tabs">
+              <button class="opt-tab active" onclick="switchOpt(this)">Brad Pitt clásico</button>
+              <button class="opt-tab" onclick="switchOpt(this)">Arepa proteica</button>
+              <button class="opt-tab" onclick="switchOpt(this)">Yogur griego</button>
+              <button class="opt-tab" onclick="switchOpt(this)">Omelette</button>
+            </div>
+            <div class="option-panel active">
+              <ul class="ingredient-list">
+                <li><span class="ing-amount">1 scoop (31g)</span><span class="ing-name">Gold Standard Whey<span class="ing-note">Post-entreno inmediato — batido en leche descremada 200ml</span></span></li>
+                <li><span class="ing-amount">1 banana (120g)</span><span class="ing-name">Banana</span></li>
+                <li><span class="ing-amount">6 claras + 2 enteros</span><span class="ing-name">Huevos revueltos<span class="ing-note">~200g total. Claras: proteína pura. Enteros: grasa saludable + nutrientes</span></span></li>
+                <li><span class="ing-amount">75g</span><span class="ing-name">Avena arrollada<span class="ing-note">Con agua o leche descremada. Podés agregar 1 cdita de miel</span></span></li>
+                <li><span class="ing-amount">Café</span><span class="ing-name">Café negro sin azúcar</span></li>
+              </ul>
+              <div class="option-macros">
+                <div class="macro-box"><div class="val" style="color:#f09090">55g</div><div class="lbl">Proteína</div></div>
+                <div class="macro-box"><div class="val" style="color:#f0b860">80g</div><div class="lbl">Carbos</div></div>
+                <div class="macro-box"><div class="val" style="color:#90d0f0">14g</div><div class="lbl">Grasas</div></div>
+                <div class="macro-box"><div class="val" style="color:#b8d860">~700</div><div class="lbl">kcal</div></div>
+              </div>
+            </div>
+            <div class="option-panel">
+              <ul class="ingredient-list">
+                <li><span class="ing-amount">1 scoop (31g)</span><span class="ing-name">Gold Standard Whey<span class="ing-note">Inmediato post-entreno con agua</span></span></li>
+                <li><span class="ing-amount">2 arepas (100g)</span><span class="ing-name">Arepas de maíz</span></li>
+                <li><span class="ing-amount">1 lata (120g)</span><span class="ing-name">Atún al natural<span class="ing-note">Escurrido</span></span></li>
+                <li><span class="ing-amount">½ palta (60g)</span><span class="ing-name">Palta<span class="ing-note">Aplastada con limón y sal</span></span></li>
+                <li><span class="ing-amount">2 unidades</span><span class="ing-name">Huevos revueltos al costado</span></li>
+              </ul>
+              <div class="option-macros">
+                <div class="macro-box"><div class="val" style="color:#f09090">55g</div><div class="lbl">Proteína</div></div>
+                <div class="macro-box"><div class="val" style="color:#f0b860">70g</div><div class="lbl">Carbos</div></div>
+                <div class="macro-box"><div class="val" style="color:#90d0f0">22g</div><div class="lbl">Grasas</div></div>
+                <div class="macro-box"><div class="val" style="color:#b8d860">~700</div><div class="lbl">kcal</div></div>
+              </div>
+            </div>
+            <div class="option-panel">
+              <ul class="ingredient-list">
+                <li><span class="ing-amount">250g</span><span class="ing-name">Yogur griego natural sin azúcar<span class="ing-note">Preferir marcas con +10g proteína/100g</span></span></li>
+                <li><span class="ing-amount">50g (½ taza)</span><span class="ing-name">Granola casera o low-sugar<span class="ing-note">Con avena, almendras, nueces y chía — ver receta en suplementos</span></span></li>
+                <li><span class="ing-amount">1 banana (120g)</span><span class="ing-name">Banana o frutillas 150g</span></li>
+                <li><span class="ing-amount">1 scoop (31g)</span><span class="ing-name">Gold Standard Whey<span class="ing-note">Mezclado en el yogur o aparte con leche — suma proteína para completar</span></span></li>
+                <li><span class="ing-amount">1 cda (10g)</span><span class="ing-name">Semillas de chía<span class="ing-note">Encima del yogur</span></span></li>
+              </ul>
+              <div class="option-macros">
+                <div class="macro-box"><div class="val" style="color:#f09090">50g</div><div class="lbl">Proteína</div></div>
+                <div class="macro-box"><div class="val" style="color:#f0b860">85g</div><div class="lbl">Carbos</div></div>
+                <div class="macro-box"><div class="val" style="color:#90d0f0">18g</div><div class="lbl">Grasas</div></div>
+                <div class="macro-box"><div class="val" style="color:#b8d860">~700</div><div class="lbl">kcal</div></div>
+              </div>
+            </div>
+            <div class="option-panel">
+              <ul class="ingredient-list">
+                <li><span class="ing-amount">3 enteros + 3 claras</span><span class="ing-name">Huevos<span class="ing-note">Omelette con relleno</span></span></li>
+                <li><span class="ing-amount">100g</span><span class="ing-name">Hongos frescos<span class="ing-note">Salteados con ajo y oliva</span></span></li>
+                <li><span class="ing-amount">30g</span><span class="ing-name">Queso tybo o port salut light<span class="ing-note">Derretido dentro del omelette</span></span></li>
+                <li><span class="ing-amount">3 rebanadas (90g)</span><span class="ing-name">Pan lactal integral<span class="ing-note">Tostadas</span></span></li>
+                <li><span class="ing-amount">½ palta (60g)</span><span class="ing-name">Palta aplastada sobre las tostadas</span></li>
+              </ul>
+              <div class="option-macros">
+                <div class="macro-box"><div class="val" style="color:#f09090">42g</div><div class="lbl">Proteína</div></div>
+                <div class="macro-box"><div class="val" style="color:#f0b860">40g</div><div class="lbl">Carbos</div></div>
+                <div class="macro-box"><div class="val" style="color:#90d0f0">28g</div><div class="lbl">Grasas</div></div>
+                <div class="macro-box"><div class="val" style="color:#b8d860">~580</div><div class="lbl">kcal</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="meal-row">
+      <div class="meal-time-col"><span class="time-label">11:30</span><div class="meal-dot"></div></div>
+      <div class="meal-card-col">
+        <div class="meal-card" onclick="toggleCard(this)">
+          <div class="meal-card-header">
+            <div class="meal-icon">🐟</div>
+            <div class="meal-info">
+              <div class="meal-name">Colación mañana</div>
+              <div class="meal-tagline">Snack proteico — no pasar más de 3h sin proteína</div>
+              <div class="macro-pills"><span class="pill pill-p">Prot 30g</span><span class="pill pill-c">Carbs 28g</span><span class="pill pill-k">~340 kcal</span></div>
+            </div>
+            <div class="expand-icon">▾</div>
+          </div>
+          <div class="meal-detail">
+            <div class="options-tabs">
+              <button class="opt-tab active" onclick="switchOpt(this)">Atún integral</button>
+              <button class="opt-tab" onclick="switchOpt(this)">Yogur + frutos secos</button>
+            </div>
+            <div class="option-panel active">
+              <ul class="ingredient-list">
+                <li><span class="ing-amount">1 lata (120g)</span><span class="ing-name">Atún al natural<span class="ing-note">Escurrido</span></span></li>
+                <li><span class="ing-amount">2 rebanadas (60g)</span><span class="ing-name">Pan lactal integral<span class="ing-note">O 1 arepa</span></span></li>
+                <li><span class="ing-amount">½ palta (60g)</span><span class="ing-name">Palta o tomate cherry al gusto</span></li>
+              </ul>
+              <div class="option-macros">
+                <div class="macro-box"><div class="val" style="color:#f09090">30g</div><div class="lbl">Proteína</div></div>
+                <div class="macro-box"><div class="val" style="color:#f0b860">28g</div><div class="lbl">Carbos</div></div>
+                <div class="macro-box"><div class="val" style="color:#90d0f0">12g</div><div class="lbl">Grasas</div></div>
+                <div class="macro-box"><div class="val" style="color:#b8d860">~340</div><div class="lbl">kcal</div></div>
+              </div>
+            </div>
+            <div class="option-panel">
+              <ul class="ingredient-list">
+                <li><span class="ing-amount">200g</span><span class="ing-name">Yogur griego o descremado natural</span></li>
+                <li><span class="ing-amount">30g</span><span class="ing-name">Almendras o nueces</span></li>
+                <li><span class="ing-amount">1 unidad</span><span class="ing-name">Manzana, naranja o kiwi (150g)</span></li>
+              </ul>
+              <div class="option-macros">
+                <div class="macro-box"><div class="val" style="color:#f09090">16g</div><div class="lbl">Proteína</div></div>
+                <div class="macro-box"><div class="val" style="color:#f0b860">35g</div><div class="lbl">Carbos</div></div>
+                <div class="macro-box"><div class="val" style="color:#90d0f0">15g</div><div class="lbl">Grasas</div></div>
+                <div class="macro-box"><div class="val" style="color:#b8d860">~330</div><div class="lbl">kcal</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="meal-row">
+      <div class="meal-time-col"><span class="time-label">13:30</span><div class="meal-dot orange"></div></div>
+      <div class="meal-card-col">
+        <div class="meal-card" onclick="toggleCard(this)">
+          <div class="meal-card-header">
+            <div class="meal-icon">🍗</div>
+            <div class="meal-info">
+              <div class="meal-name">Almuerzo</div>
+              <div class="meal-tagline">Comida principal — proteína + carbos complejos</div>
+              <div class="macro-pills"><span class="pill pill-p">Prot 48g</span><span class="pill pill-c">Carbs 70g</span><span class="pill pill-g">Grasas 14g</span><span class="pill pill-k">~620 kcal</span></div>
+            </div>
+            <div class="expand-icon">▾</div>
+          </div>
+          <div class="meal-detail">
+            <div class="options-tabs">
+              <button class="opt-tab active" onclick="switchOpt(this)">Pollo + arroz</button>
+              <button class="opt-tab" onclick="switchOpt(this)">Merluza + fideos</button>
+              <button class="opt-tab" onclick="switchOpt(this)">Bife + papa</button>
+              <button class="opt-tab" onclick="switchOpt(this)">Frutos de mar</button>
+            </div>
+            <div class="option-panel active">
+              <ul class="ingredient-list">
+                <li><span class="ing-amount">200g</span><span class="ing-name">Pechuga de pollo a la plancha<span class="ing-note">Condimentar con limón, ajo, orégano</span></span></li>
+                <li><span class="ing-amount">90g crudo</span><span class="ing-name">Arroz integral<span class="ing-note">≈ 230g cocido. Cociná en caldo de verduras</span></span></li>
+                <li><span class="ing-amount">200g</span><span class="ing-name">Brócoli o zapallitos al vapor<span class="ing-note">Con limón y sal</span></span></li>
+                <li><span class="ing-amount">1 cda (10ml)</span><span class="ing-name">Aceite de oliva extra virgen<span class="ing-note">En crudo al emplatar</span></span></li>
+              </ul>
+              <div class="option-macros">
+                <div class="macro-box"><div class="val" style="color:#f09090">50g</div><div class="lbl">Proteína</div></div>
+                <div class="macro-box"><div class="val" style="color:#f0b860">75g</div><div class="lbl">Carbos</div></div>
+                <div class="macro-box"><div class="val" style="color:#90d0f0">12g</div><div class="lbl">Grasas</div></div>
+                <div class="macro-box"><div class="val" style="color:#b8d860">~640</div><div class="lbl">kcal</div></div>
+              </div>
+            </div>
+            <div class="option-panel">
+              <ul class="ingredient-list">
+                <li><span class="ing-amount">220g</span><span class="ing-name">Merluza a la plancha o al horno<span class="ing-note">Sin empanizar — con ajo, limón y pimienta</span></span></li>
+                <li><span class="ing-amount">80g crudo</span><span class="ing-name">Fideos integrales<span class="ing-note">≈ 200g cocidos</span></span></li>
+                <li><span class="ing-amount">150g</span><span class="ing-name">Tomate cherry<span class="ing-note">Con albahaca fresca y ajo</span></span></li>
+                <li><span class="ing-amount">1 cda (10ml)</span><span class="ing-name">Aceite de oliva extra virgen</span></li>
+                <li><span class="ing-amount">20g</span><span class="ing-name">Queso parmesano rallado</span></li>
+              </ul>
+              <div class="option-macros">
+                <div class="macro-box"><div class="val" style="color:#f09090">48g</div><div class="lbl">Proteína</div></div>
+                <div class="macro-box"><div class="val" style="color:#f0b860">70g</div><div class="lbl">Carbos</div></div>
+                <div class="macro-box"><div class="val" style="color:#90d0f0">14g</div><div class="lbl">Grasas</div></div>
+                <div class="macro-box"><div class="val" style="color:#b8d860">~620</div><div class="lbl">kcal</div></div>
+              </div>
+            </div>
+            <div class="option-panel">
+              <ul class="ingredient-list">
+                <li><span class="ing-amount">180g</span><span class="ing-name">Bife de lomo o nalga a la plancha<span class="ing-note">Vuelta y vuelta — sin aceite, la propia grasa es suficiente</span></span></li>
+                <li><span class="ing-amount">200g</span><span class="ing-name">Papa o batata al horno<span class="ing-note">Con cáscara, sal y pimentón</span></span></li>
+                <li><span class="ing-amount">60g</span><span class="ing-name">Rúcula</span></li>
+                <li><span class="ing-amount">100g</span><span class="ing-name">Tomate cherry</span></li>
+                <li><span class="ing-amount">½ palta (60g)</span><span class="ing-name">Palta en ensalada</span></li>
+                <li><span class="ing-amount">1 cda (10ml)</span><span class="ing-name">Aceite de oliva</span></li>
+              </ul>
+              <div class="option-macros">
+                <div class="macro-box"><div class="val" style="color:#f09090">45g</div><div class="lbl">Proteína</div></div>
+                <div class="macro-box"><div class="val" style="color:#f0b860">55g</div><div class="lbl">Carbos</div></div>
+                <div class="macro-box"><div class="val" style="color:#90d0f0">22g</div><div class="lbl">Grasas</div></div>
+                <div class="macro-box"><div class="val" style="color:#b8d860">~610</div><div class="lbl">kcal</div></div>
+              </div>
+            </div>
+            <div class="option-panel">
+              <ul class="ingredient-list">
+                <li><span class="ing-amount">300g</span><span class="ing-name">Mejillones o mix frutos de mar<span class="ing-note">Salteados con ajo, vino blanco y perejil</span></span></li>
+                <li><span class="ing-amount">80g crudo</span><span class="ing-name">Fideos integrales</span></li>
+                <li><span class="ing-amount">150g</span><span class="ing-name">Tomate cherry o salsa de tomate natural</span></li>
+                <li><span class="ing-amount">1 cda (10ml)</span><span class="ing-name">Aceite de oliva</span></li>
+                <li><span class="ing-amount">20g</span><span class="ing-name">Muzzarela light (opcional)</span></li>
+              </ul>
+              <div class="option-macros">
+                <div class="macro-box"><div class="val" style="color:#f09090">42g</div><div class="lbl">Proteína</div></div>
+                <div class="macro-box"><div class="val" style="color:#f0b860">68g</div><div class="lbl">Carbos</div></div>
+                <div class="macro-box"><div class="val" style="color:#90d0f0">12g</div><div class="lbl">Grasas</div></div>
+                <div class="macro-box"><div class="val" style="color:#b8d860">~580</div><div class="lbl">kcal</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="meal-row">
+      <div class="meal-time-col"><span class="time-label">20:30</span><div class="meal-dot"></div></div>
+      <div class="meal-card-col">
+        <div class="meal-card" onclick="toggleCard(this)">
+          <div class="meal-card-header">
+            <div class="meal-icon">🌙</div>
+            <div class="meal-info">
+              <div class="meal-name">Cena</div>
+              <div class="meal-tagline">Proteína de calidad + carbos moderados</div>
+              <div class="macro-pills"><span class="pill pill-p">Prot 45g</span><span class="pill pill-c">Carbs 50g</span><span class="pill pill-g">Grasas 12g</span><span class="pill pill-k">~490 kcal</span></div>
+            </div>
+            <div class="expand-icon">▾</div>
+          </div>
+          <div class="meal-detail">
+            <div class="options-tabs">
+              <button class="opt-tab active" onclick="switchOpt(this)">Pollo al horno</button>
+              <button class="opt-tab" onclick="switchOpt(this)">Merluza + arroz</button>
+              <button class="opt-tab" onclick="switchOpt(this)">Tortilla de huevos</button>
+            </div>
+            <div class="option-panel active">
+              <ul class="ingredient-list">
+                <li><span class="ing-amount">200g</span><span class="ing-name">Pechuga o muslo de pollo al horno<span class="ing-note">Con chimichurri casero o limón y ajo</span></span></li>
+                <li><span class="ing-amount">150g</span><span class="ing-name">Papa o batata al horno</span></li>
+                <li><span class="ing-amount">200g</span><span class="ing-name">Mix de vegetales<span class="ing-note">Brócoli, zapallitos, espinaca — a la plancha o vapor</span></span></li>
+                <li><span class="ing-amount">1 cda (10ml)</span><span class="ing-name">Aceite de oliva</span></li>
+              </ul>
+              <div class="option-macros">
+                <div class="macro-box"><div class="val" style="color:#f09090">46g</div><div class="lbl">Proteína</div></div>
+                <div class="macro-box"><div class="val" style="color:#f0b860">45g</div><div class="lbl">Carbos</div></div>
+                <div class="macro-box"><div class="val" style="color:#90d0f0">12g</div><div class="lbl">Grasas</div></div>
+                <div class="macro-box"><div class="val" style="color:#b8d860">~490</div><div class="lbl">kcal</div></div>
+              </div>
+            </div>
+            <div class="option-panel">
+              <ul class="ingredient-list">
+                <li><span class="ing-amount">220g</span><span class="ing-name">Merluza al horno<span class="ing-note">Sin empanizar. Con tomate y orégano encima</span></span></li>
+                <li><span class="ing-amount">70g crudo</span><span class="ing-name">Arroz integral<span class="ing-note">≈ 180g cocido</span></span></li>
+                <li><span class="ing-amount">60g</span><span class="ing-name">Lechuga o rúcula</span></li>
+                <li><span class="ing-amount">100g</span><span class="ing-name">Tomate cherry</span></li>
+                <li><span class="ing-amount">1 cda (10ml)</span><span class="ing-name">Aceite de oliva</span></li>
+              </ul>
+              <div class="option-macros">
+                <div class="macro-box"><div class="val" style="color:#f09090">48g</div><div class="lbl">Proteína</div></div>
+                <div class="macro-box"><div class="val" style="color:#f0b860">60g</div><div class="lbl">Carbos</div></div>
+                <div class="macro-box"><div class="val" style="color:#90d0f0">8g</div><div class="lbl">Grasas</div></div>
+                <div class="macro-box"><div class="val" style="color:#b8d860">~510</div><div class="lbl">kcal</div></div>
+              </div>
+            </div>
+            <div class="option-panel">
+              <ul class="ingredient-list">
+                <li><span class="ing-amount">3 enteros + 2 claras</span><span class="ing-name">Huevos<span class="ing-note">Tortilla o revueltos</span></span></li>
+                <li><span class="ing-amount">100g</span><span class="ing-name">Hongos frescos salteados</span></li>
+                <li><span class="ing-amount">30g</span><span class="ing-name">Queso port salut light</span></li>
+                <li><span class="ing-amount">60g crudo</span><span class="ing-name">Fideos integrales<span class="ing-note">Con salsa de tomate natural y albahaca</span></span></li>
+                <li><span class="ing-amount">Rúcula</span><span class="ing-name">A gusto como ensalada</span></li>
+              </ul>
+              <div class="option-macros">
+                <div class="macro-box"><div class="val" style="color:#f09090">42g</div><div class="lbl">Proteína</div></div>
+                <div class="macro-box"><div class="val" style="color:#f0b860">55g</div><div class="lbl">Carbos</div></div>
+                <div class="macro-box"><div class="val" style="color:#90d0f0">16g</div><div class="lbl">Grasas</div></div>
+                <div class="macro-box"><div class="val" style="color:#b8d860">~530</div><div class="lbl">kcal</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="meal-row">
+      <div class="meal-time-col"><span class="time-label">22:30</span><div class="meal-dot blue"></div></div>
+      <div class="meal-card-col">
+        <div class="meal-card" onclick="toggleCard(this)">
+          <div class="meal-card-header">
+            <div class="meal-icon">🌛</div>
+            <div class="meal-info">
+              <div class="meal-name">Snack nocturno (opcional)</div>
+              <div class="meal-tagline">Proteína de liberación lenta — síntesis muscular durante el sueño</div>
+              <div class="macro-pills"><span class="pill pill-p">Prot 16g</span><span class="pill pill-k">~180 kcal</span></div>
+            </div>
+            <div class="expand-icon">▾</div>
+          </div>
+          <div class="meal-detail">
+            <div class="option-panel active" style="display:block">
+              <ul class="ingredient-list">
+                <li><span class="ing-amount">200g</span><span class="ing-name">Yogur griego natural sin azúcar<span class="ing-note">Proteína de caseína — digestión lenta ideal para la noche</span></span></li>
+                <li><span class="ing-amount">20g</span><span class="ing-name">Almendras o nueces (opcional)<span class="ing-note">Solo si el día fue muy exigente</span></span></li>
+              </ul>
+              <div class="prep-note">Igual que hacía Brad Pitt con el cottage cheese. La caseína del yogur se digiere lentamente y alimenta los músculos durante las horas de sueño.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCHEDULE 1PM -->
+  <div id="sched-1pm" class="timeline">
+    <div class="meal-row">
+      <div class="meal-time-col"><span class="time-label">9:00</span><div class="meal-dot orange"></div></div>
+      <div class="meal-card-col">
+        <div class="meal-card" onclick="toggleCard(this)">
+          <div class="meal-card-header"><div class="meal-icon">🍳</div><div class="meal-info"><div class="meal-name">Desayuno</div><div class="meal-tagline">Arranque del día — proteína + carbos complejos</div><div class="macro-pills"><span class="pill pill-p">Prot 40g</span><span class="pill pill-c">Carbs 65g</span><span class="pill pill-k">~550 kcal</span></div></div><div class="expand-icon">▾</div></div>
+          <div class="meal-detail">
+            <div class="options-tabs"><button class="opt-tab active" onclick="switchOpt(this)">Brad Pitt clásico</button><button class="opt-tab" onclick="switchOpt(this)">Arepa proteica</button><button class="opt-tab" onclick="switchOpt(this)">Yogur griego</button><button class="opt-tab" onclick="switchOpt(this)">Omelette + tostadas</button></div>
+            <div class="option-panel active">
+              <ul class="ingredient-list">
+                <li><span class="ing-amount">6 claras + 2 enteros</span><span class="ing-name">Huevos revueltos</span></li>
+                <li><span class="ing-amount">75g</span><span class="ing-name">Avena arrollada con leche descremada o agua</span></li>
+                <li><span class="ing-amount">1 banana (120g)</span><span class="ing-name">Banana mediana</span></li>
+                <li><span class="ing-amount">Café</span><span class="ing-name">Café negro sin azúcar</span></li>
+              </ul>
+              <div class="option-macros"><div class="macro-box"><div class="val" style="color:#f09090">40g</div><div class="lbl">Proteína</div></div><div class="macro-box"><div class="val" style="color:#f0b860">65g</div><div class="lbl">Carbos</div></div><div class="macro-box"><div class="val" style="color:#90d0f0">14g</div><div class="lbl">Grasas</div></div><div class="macro-box"><div class="val" style="color:#b8d860">~550</div><div class="lbl">kcal</div></div></div>
+            </div>
+            <div class="option-panel">
+              <ul class="ingredient-list">
+                <li><span class="ing-amount">2 arepas (100g)</span><span class="ing-name">Arepas de maíz</span></li>
+                <li><span class="ing-amount">1 lata (120g)</span><span class="ing-name">Atún al natural</span></li>
+                <li><span class="ing-amount">½ palta (60g)</span><span class="ing-name">Palta</span></li>
+                <li><span class="ing-amount">2 unidades</span><span class="ing-name">Huevos revueltos o duros al costado</span></li>
+              </ul>
+              <div class="option-macros"><div class="macro-box"><div class="val" style="color:#f09090">45g</div><div class="lbl">Proteína</div></div><div class="macro-box"><div class="val" style="color:#f0b860">60g</div><div class="lbl">Carbos</div></div><div class="macro-box"><div class="val" style="color:#90d0f0">22g</div><div class="lbl">Grasas</div></div><div class="macro-box"><div class="val" style="color:#b8d860">~620</div><div class="lbl">kcal</div></div></div>
+            </div>
+            <div class="option-panel">
+              <ul class="ingredient-list">
+                <li><span class="ing-amount">250g</span><span class="ing-name">Yogur griego natural</span></li>
+                <li><span class="ing-amount">50g</span><span class="ing-name">Granola low-sugar (con avena, almendras, chía)</span></li>
+                <li><span class="ing-amount">1 banana o 150g frutillas</span><span class="ing-name">Fruta</span></li>
+                <li><span class="ing-amount">1 scoop (31g)</span><span class="ing-name">Gold Standard Whey<span class="ing-note">Mezclado dentro del yogur — para completar proteína</span></span></li>
+              </ul>
+              <div class="option-macros"><div class="macro-box"><div class="val" style="color:#f09090">50g</div><div class="lbl">Proteína</div></div><div class="macro-box"><div class="val" style="color:#f0b860">85g</div><div class="lbl">Carbos</div></div><div class="macro-box"><div class="val" style="color:#90d0f0">18g</div><div class="lbl">Grasas</div></div><div class="macro-box"><div class="val" style="color:#b8d860">~700</div><div class="lbl">kcal</div></div></div>
+            </div>
+            <div class="option-panel">
+              <ul class="ingredient-list">
+                <li><span class="ing-amount">3 enteros + 3 claras</span><span class="ing-name">Huevos revueltos</span></li>
+                <li><span class="ing-amount">3 rebanadas (90g)</span><span class="ing-name">Pan lactal integral — tostadas</span></li>
+                <li><span class="ing-amount">½ palta (60g)</span><span class="ing-name">Palta sobre las tostadas</span></li>
+                <li><span class="ing-amount">100g</span><span class="ing-name">Hongos salteados (opcional)</span></li>
+              </ul>
+              <div class="option-macros"><div class="macro-box"><div class="val" style="color:#f09090">38g</div><div class="lbl">Proteína</div></div><div class="macro-box"><div class="val" style="color:#f0b860">38g</div><div class="lbl">Carbos</div></div><div class="macro-box"><div class="val" style="color:#90d0f0">26g</div><div class="lbl">Grasas</div></div><div class="macro-box"><div class="val" style="color:#b8d860">~540</div><div class="lbl">kcal</div></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="meal-row">
+      <div class="meal-time-col"><span class="time-label">11:30</span><div class="meal-dot"></div></div>
+      <div class="meal-card-col">
+        <div class="meal-card" onclick="toggleCard(this)">
+          <div class="meal-card-header"><div class="meal-icon">🐟</div><div class="meal-info"><div class="meal-name">Colación mañana</div><div class="meal-tagline">Snack proteico</div><div class="macro-pills"><span class="pill pill-p">Prot 30g</span><span class="pill pill-c">Carbs 28g</span><span class="pill pill-k">~340 kcal</span></div></div><div class="expand-icon">▾</div></div>
+          <div class="meal-detail">
+            <div class="option-panel active" style="display:block">
+              <ul class="ingredient-list">
+                <li><span class="ing-amount">1 lata (120g)</span><span class="ing-name">Atún al natural</span></li>
+                <li><span class="ing-amount">2 rebanadas (60g)</span><span class="ing-name">Pan lactal integral o 1 arepa</span></li>
+                <li><span class="ing-amount">½ palta (60g)</span><span class="ing-name">Palta o tomate cherry</span></li>
+              </ul>
+              <div class="option-macros"><div class="macro-box"><div class="val" style="color:#f09090">30g</div><div class="lbl">Proteína</div></div><div class="macro-box"><div class="val" style="color:#f0b860">28g</div><div class="lbl">Carbos</div></div><div class="macro-box"><div class="val" style="color:#90d0f0">12g</div><div class="lbl">Grasas</div></div><div class="macro-box"><div class="val" style="color:#b8d860">~340</div><div class="lbl">kcal</div></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="meal-row">
+      <div class="meal-time-col"><span class="time-label">12:00</span><div class="meal-dot blue"></div></div>
+      <div class="meal-card-col">
+        <div class="meal-card" onclick="toggleCard(this)">
+          <div class="meal-card-header"><div class="meal-icon">⚡</div><div class="meal-info"><div class="meal-name">Pre-entreno</div><div class="meal-tagline">Carga de glucógeno 1h antes del gym</div><div class="macro-pills"><span class="pill pill-p">Prot 28g</span><span class="pill pill-c">Carbs 35g</span><span class="pill pill-k">~260 kcal</span></div></div><div class="expand-icon">▾</div></div>
+          <div class="meal-detail">
+            <div class="option-panel active" style="display:block">
+              <ul class="ingredient-list">
+                <li><span class="ing-amount">1 scoop (31g)</span><span class="ing-name">Gold Standard Whey con agua</span></li>
+                <li><span class="ing-amount">1 banana (120g)</span><span class="ing-name">Banana mediana</span></li>
+                <li><span class="ing-amount">3-5g</span><span class="ing-name">Creatina monohidratada</span></li>
+              </ul>
+              <div class="option-macros"><div class="macro-box"><div class="val" style="color:#f09090">28g</div><div class="lbl">Proteína</div></div><div class="macro-box"><div class="val" style="color:#f0b860">35g</div><div class="lbl">Carbos</div></div><div class="macro-box"><div class="val" style="color:#b8d860">~260</div><div class="lbl">kcal</div></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="meal-row">
+      <div class="meal-time-col"><span class="time-label">13:00</span><div class="meal-dot orange"></div></div>
+      <div class="meal-card-col"><div class="meal-card"><div class="meal-card-header"><div class="meal-icon">🏋️</div><div class="meal-info"><div class="meal-name">ENTRENO</div><div class="meal-tagline">Gym al mediodía</div></div></div></div></div>
+    </div>
+    <div class="meal-row">
+      <div class="meal-time-col"><span class="time-label">14:30</span><div class="meal-dot orange"></div></div>
+      <div class="meal-card-col">
+        <div class="meal-card" onclick="toggleCard(this)">
+          <div class="meal-card-header"><div class="meal-icon">🍗</div><div class="meal-info"><div class="meal-name">Post-entreno + Almuerzo</div><div class="meal-tagline">Ventana anabólica — proteína inmediata + comida completa</div><div class="macro-pills"><span class="pill pill-p">Prot 75g</span><span class="pill pill-c">Carbs 80g</span><span class="pill pill-k">~860 kcal</span></div></div><div class="expand-icon">▾</div></div>
+          <div class="meal-detail">
+            <div class="options-tabs"><button class="opt-tab active" onclick="switchOpt(this)">Batido + pollo arroz</button><button class="opt-tab" onclick="switchOpt(this)">Batido + merluza fideos</button></div>
+            <div class="option-panel active">
+              <ul class="ingredient-list">
+                <li><span class="ing-amount">1 scoop (31g)</span><span class="ing-name">Gold Standard Whey<span class="ing-note">Inmediato post-gym con agua o leche descremada</span></span></li>
+                <li><span class="ing-amount">1 banana (120g)</span><span class="ing-name">Banana</span></li>
+                <li><span class="ing-amount">200g</span><span class="ing-name">Pechuga de pollo a la plancha</span></li>
+                <li><span class="ing-amount">90g crudo</span><span class="ing-name">Arroz integral (≈230g cocido)</span></li>
+                <li><span class="ing-amount">200g</span><span class="ing-name">Brócoli o zapallitos</span></li>
+                <li><span class="ing-amount">1 cda (10ml)</span><span class="ing-name">Aceite de oliva</span></li>
+              </ul>
+              <div class="option-macros"><div class="macro-box"><div class="val" style="color:#f09090">75g</div><div class="lbl">Proteína</div></div><div class="macro-box"><div class="val" style="color:#f0b860">80g</div><div class="lbl">Carbos</div></div><div class="macro-box"><div class="val" style="color:#b8d860">~860</div><div class="lbl">kcal</div></div></div>
+            </div>
+            <div class="option-panel">
+              <ul class="ingredient-list">
+                <li><span class="ing-amount">1 scoop (31g)</span><span class="ing-name">Gold Standard Whey</span></li>
+                <li><span class="ing-amount">220g</span><span class="ing-name">Merluza al horno</span></li>
+                <li><span class="ing-amount">80g crudo</span><span class="ing-name">Fideos integrales</span></li>
+                <li><span class="ing-amount">150g</span><span class="ing-name">Tomate cherry + albahaca + 20g parmesano</span></li>
+              </ul>
+              <div class="option-macros"><div class="macro-box"><div class="val" style="color:#f09090">72g</div><div class="lbl">Proteína</div></div><div class="macro-box"><div class="val" style="color:#f0b860">78g</div><div class="lbl">Carbos</div></div><div class="macro-box"><div class="val" style="color:#b8d860">~820</div><div class="lbl">kcal</div></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="meal-row">
+      <div class="meal-time-col"><span class="time-label">18:00</span><div class="meal-dot"></div></div>
+      <div class="meal-card-col">
+        <div class="meal-card" onclick="toggleCard(this)">
+          <div class="meal-card-header"><div class="meal-icon">🍎</div><div class="meal-info"><div class="meal-name">Merienda</div><div class="meal-tagline">Colación proteica de tarde</div><div class="macro-pills"><span class="pill pill-p">Prot 16g</span><span class="pill pill-c">Carbs 35g</span><span class="pill pill-k">~330 kcal</span></div></div><div class="expand-icon">▾</div></div>
+          <div class="meal-detail">
+            <div class="option-panel active" style="display:block">
+              <ul class="ingredient-list">
+                <li><span class="ing-amount">200g</span><span class="ing-name">Yogur griego natural</span></li>
+                <li><span class="ing-amount">30g</span><span class="ing-name">Almendras o nueces</span></li>
+                <li><span class="ing-amount">1 manzana o naranja</span><span class="ing-name">Fruta (150g)</span></li>
+              </ul>
+              <div class="option-macros"><div class="macro-box"><div class="val" style="color:#f09090">16g</div><div class="lbl">Proteína</div></div><div class="macro-box"><div class="val" style="color:#f0b860">35g</div><div class="lbl">Carbos</div></div><div class="macro-box"><div class="val" style="color:#90d0f0">15g</div><div class="lbl">Grasas</div></div><div class="macro-box"><div class="val" style="color:#b8d860">~330</div><div class="lbl">kcal</div></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="meal-row">
+      <div class="meal-time-col"><span class="time-label">21:00</span><div class="meal-dot"></div></div>
+      <div class="meal-card-col">
+        <div class="meal-card" onclick="toggleCard(this)">
+          <div class="meal-card-header"><div class="meal-icon">🌙</div><div class="meal-info"><div class="meal-name">Cena</div><div class="meal-tagline">Proteína de calidad — carbos reducidos si no entrenaste</div><div class="macro-pills"><span class="pill pill-p">Prot 45g</span><span class="pill pill-c">Carbs 45g</span><span class="pill pill-k">~490 kcal</span></div></div><div class="expand-icon">▾</div></div>
+          <div class="meal-detail">
+            <div class="option-panel active" style="display:block">
+              <ul class="ingredient-list">
+                <li><span class="ing-amount">200g</span><span class="ing-name">Pollo o merluza al horno</span></li>
+                <li><span class="ing-amount">150g</span><span class="ing-name">Papa o batata al horno</span></li>
+                <li><span class="ing-amount">200g</span><span class="ing-name">Vegetales salteados o al vapor</span></li>
+                <li><span class="ing-amount">1 cda (10ml)</span><span class="ing-name">Aceite de oliva</span></li>
+              </ul>
+              <div class="option-macros"><div class="macro-box"><div class="val" style="color:#f09090">45g</div><div class="lbl">Proteína</div></div><div class="macro-box"><div class="val" style="color:#f0b860">45g</div><div class="lbl">Carbos</div></div><div class="macro-box"><div class="val" style="color:#b8d860">~490</div><div class="lbl">kcal</div></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCHEDULE 9PM -->
+  <div id="sched-9pm" class="timeline">
+    <div class="meal-row">
+      <div class="meal-time-col"><span class="time-label">9:00</span><div class="meal-dot orange"></div></div>
+      <div class="meal-card-col">
+        <div class="meal-card" onclick="toggleCard(this)">
+          <div class="meal-card-header"><div class="meal-icon">🍳</div><div class="meal-info"><div class="meal-name">Desayuno</div><div class="meal-tagline">Arranque del día — base proteica</div><div class="macro-pills"><span class="pill pill-p">Prot 40g</span><span class="pill pill-c">Carbs 65g</span><span class="pill pill-k">~550 kcal</span></div></div><div class="expand-icon">▾</div></div>
+          <div class="meal-detail">
+            <div class="options-tabs"><button class="opt-tab active" onclick="switchOpt(this)">Brad Pitt clásico</button><button class="opt-tab" onclick="switchOpt(this)">Arepa proteica</button><button class="opt-tab" onclick="switchOpt(this)">Yogur griego + granola</button><button class="opt-tab" onclick="switchOpt(this)">Omelette + tostadas</button></div>
+            <div class="option-panel active">
+              <ul class="ingredient-list">
+                <li><span class="ing-amount">6 claras + 2 enteros</span><span class="ing-name">Huevos revueltos</span></li>
+                <li><span class="ing-amount">75g</span><span class="ing-name">Avena arrollada con leche descremada</span></li>
+                <li><span class="ing-amount">1 banana (120g)</span><span class="ing-name">Banana mediana</span></li>
+                <li><span class="ing-amount">Café</span><span class="ing-name">Café negro sin azúcar</span></li>
+              </ul>
+              <div class="option-macros"><div class="macro-box"><div class="val" style="color:#f09090">40g</div><div class="lbl">Proteína</div></div><div class="macro-box"><div class="val" style="color:#f0b860">65g</div><div class="lbl">Carbos</div></div><div class="macro-box"><div class="val" style="color:#90d0f0">14g</div><div class="lbl">Grasas</div></div><div class="macro-box"><div class="val" style="color:#b8d860">~550</div><div class="lbl">kcal</div></div></div>
+            </div>
+            <div class="option-panel">
+              <ul class="ingredient-list">
+                <li><span class="ing-amount">2 arepas (100g)</span><span class="ing-name">Arepas de maíz</span></li>
+                <li><span class="ing-amount">1 lata (120g)</span><span class="ing-name">Atún al natural</span></li>
+                <li><span class="ing-amount">½ palta (60g)</span><span class="ing-name">Palta</span></li>
+                <li><span class="ing-amount">2 unidades</span><span class="ing-name">Huevos revueltos</span></li>
+              </ul>
+              <div class="option-macros"><div class="macro-box"><div class="val" style="color:#f09090">45g</div><div class="lbl">Proteína</div></div><div class="macro-box"><div class="val" style="color:#f0b860">60g</div><div class="lbl">Carbos</div></div><div class="macro-box"><div class="val" style="color:#90d0f0">22g</div><div class="lbl">Grasas</div></div><div class="macro-box"><div class="val" style="color:#b8d860">~620</div><div class="lbl">kcal</div></div></div>
+            </div>
+            <div class="option-panel">
+              <ul class="ingredient-list">
+                <li><span class="ing-amount">250g</span><span class="ing-name">Yogur griego natural</span></li>
+                <li><span class="ing-amount">50g</span><span class="ing-name">Granola (avena + almendras + nueces + chía)</span></li>
+                <li><span class="ing-amount">1 banana o 150g</span><span class="ing-name">Frutillas o arándanos</span></li>
+                <li><span class="ing-amount">1 scoop (31g)</span><span class="ing-name">Gold Standard Whey mezclado en el yogur</span></li>
+              </ul>
+              <div class="option-macros"><div class="macro-box"><div class="val" style="color:#f09090">50g</div><div class="lbl">Proteína</div></div><div class="macro-box"><div class="val" style="color:#f0b860">85g</div><div class="lbl">Carbos</div></div><div class="macro-box"><div class="val" style="color:#90d0f0">18g</div><div class="lbl">Grasas</div></div><div class="macro-box"><div class="val" style="color:#b8d860">~700</div><div class="lbl">kcal</div></div></div>
+            </div>
+            <div class="option-panel">
+              <ul class="ingredient-list">
+                <li><span class="ing-amount">3 enteros + 3 claras</span><span class="ing-name">Huevos revueltos</span></li>
+                <li><span class="ing-amount">3 rebanadas (90g)</span><span class="ing-name">Pan lactal integral tostado</span></li>
+                <li><span class="ing-amount">½ palta (60g)</span><span class="ing-name">Palta sobre las tostadas</span></li>
+                <li><span class="ing-amount">100g</span><span class="ing-name">Hongos salteados en aceite de oliva</span></li>
+              </ul>
+              <div class="option-macros"><div class="macro-box"><div class="val" style="color:#f09090">38g</div><div class="lbl">Proteína</div></div><div class="macro-box"><div class="val" style="color:#f0b860">40g</div><div class="lbl">Carbos</div></div><div class="macro-box"><div class="val" style="color:#90d0f0">26g</div><div class="lbl">Grasas</div></div><div class="macro-box"><div class="val" style="color:#b8d860">~540</div><div class="lbl">kcal</div></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="meal-row">
+      <div class="meal-time-col"><span class="time-label">12:00</span><div class="meal-dot"></div></div>
+      <div class="meal-card-col">
+        <div class="meal-card" onclick="toggleCard(this)">
+          <div class="meal-card-header"><div class="meal-icon">🐟</div><div class="meal-info"><div class="meal-name">Colación mañana</div><div class="meal-tagline">Snack proteico</div><div class="macro-pills"><span class="pill pill-p">Prot 30g</span><span class="pill pill-c">Carbs 28g</span><span class="pill pill-k">~340 kcal</span></div></div><div class="expand-icon">▾</div></div>
+          <div class="meal-detail">
+            <div class="option-panel active" style="display:block">
+              <ul class="ingredient-list">
+                <li><span class="ing-amount">1 lata (120g)</span><span class="ing-name">Atún al natural</span></li>
+                <li><span class="ing-amount">2 rebanadas (60g)</span><span class="ing-name">Pan lactal integral o 1 arepa</span></li>
+                <li><span class="ing-amount">½ palta (60g)</span><span class="ing-name">Palta</span></li>
+              </ul>
+              <div class="option-macros"><div class="macro-box"><div class="val" style="color:#f09090">30g</div><div class="lbl">Proteína</div></div><div class="macro-box"><div class="val" style="color:#f0b860">28g</div><div class="lbl">Carbos</div></div><div class="macro-box"><div class="val" style="color:#90d0f0">12g</div><div class="lbl">Grasas</div></div><div class="macro-box"><div class="val" style="color:#b8d860">~340</div><div class="lbl">kcal</div></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="meal-row">
+      <div class="meal-time-col"><span class="time-label">13:30</span><div class="meal-dot orange"></div></div>
+      <div class="meal-card-col">
+        <div class="meal-card" onclick="toggleCard(this)">
+          <div class="meal-card-header"><div class="meal-icon">🍗</div><div class="meal-info"><div class="meal-name">Almuerzo</div><div class="meal-tagline">Comida principal — proteína + carbos complejos</div><div class="macro-pills"><span class="pill pill-p">Prot 48g</span><span class="pill pill-c">Carbs 70g</span><span class="pill pill-k">~620 kcal</span></div></div><div class="expand-icon">▾</div></div>
+          <div class="meal-detail">
+            <div class="options-tabs"><button class="opt-tab active" onclick="switchOpt(this)">Pollo + arroz</button><button class="opt-tab" onclick="switchOpt(this)">Merluza + fideos</button><button class="opt-tab" onclick="switchOpt(this)">Bife + papa</button></div>
+            <div class="option-panel active">
+              <ul class="ingredient-list">
+                <li><span class="ing-amount">200g</span><span class="ing-name">Pechuga de pollo a la plancha</span></li>
+                <li><span class="ing-amount">90g crudo</span><span class="ing-name">Arroz integral (≈230g cocido)</span></li>
+                <li><span class="ing-amount">200g</span><span class="ing-name">Brócoli o zapallitos al vapor</span></li>
+                <li><span class="ing-amount">1 cda (10ml)</span><span class="ing-name">Aceite de oliva en crudo</span></li>
+              </ul>
+              <div class="option-macros"><div class="macro-box"><div class="val" style="color:#f09090">50g</div><div class="lbl">Proteína</div></div><div class="macro-box"><div class="val" style="color:#f0b860">75g</div><div class="lbl">Carbos</div></div><div class="macro-box"><div class="val" style="color:#90d0f0">12g</div><div class="lbl">Grasas</div></div><div class="macro-box"><div class="val" style="color:#b8d860">~640</div><div class="lbl">kcal</div></div></div>
+            </div>
+            <div class="option-panel">
+              <ul class="ingredient-list">
+                <li><span class="ing-amount">220g</span><span class="ing-name">Merluza al horno o plancha</span></li>
+                <li><span class="ing-amount">80g crudo</span><span class="ing-name">Fideos integrales</span></li>
+                <li><span class="ing-amount">150g</span><span class="ing-name">Tomate cherry + albahaca</span></li>
+                <li><span class="ing-amount">20g</span><span class="ing-name">Parmesano + 1 cda aceite de oliva</span></li>
+              </ul>
+              <div class="option-macros"><div class="macro-box"><div class="val" style="color:#f09090">48g</div><div class="lbl">Proteína</div></div><div class="macro-box"><div class="val" style="color:#f0b860">70g</div><div class="lbl">Carbos</div></div><div class="macro-box"><div class="val" style="color:#90d0f0">14g</div><div class="lbl">Grasas</div></div><div class="macro-box"><div class="val" style="color:#b8d860">~620</div><div class="lbl">kcal</div></div></div>
+            </div>
+            <div class="option-panel">
+              <ul class="ingredient-list">
+                <li><span class="ing-amount">180g</span><span class="ing-name">Bife de lomo o nalga a la plancha</span></li>
+                <li><span class="ing-amount">200g</span><span class="ing-name">Papa o batata al horno</span></li>
+                <li><span class="ing-amount">½ palta (60g)</span><span class="ing-name">Palta en ensalada con rúcula y tomate</span></li>
+              </ul>
+              <div class="option-macros"><div class="macro-box"><div class="val" style="color:#f09090">45g</div><div class="lbl">Proteína</div></div><div class="macro-box"><div class="val" style="color:#f0b860">55g</div><div class="lbl">Carbos</div></div><div class="macro-box"><div class="val" style="color:#90d0f0">22g</div><div class="lbl">Grasas</div></div><div class="macro-box"><div class="val" style="color:#b8d860">~610</div><div class="lbl">kcal</div></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="meal-row">
+      <div class="meal-time-col"><span class="time-label">17:30</span><div class="meal-dot"></div></div>
+      <div class="meal-card-col">
+        <div class="meal-card" onclick="toggleCard(this)">
+          <div class="meal-card-header"><div class="meal-icon">🍎</div><div class="meal-info"><div class="meal-name">Merienda</div><div class="meal-tagline">Snack de tarde — energía para el gym nocturno</div><div class="macro-pills"><span class="pill pill-p">Prot 16g</span><span class="pill pill-c">Carbs 35g</span><span class="pill pill-k">~330 kcal</span></div></div><div class="expand-icon">▾</div></div>
+          <div class="meal-detail">
+            <div class="option-panel active" style="display:block">
+              <ul class="ingredient-list">
+                <li><span class="ing-amount">200g</span><span class="ing-name">Yogur griego natural</span></li>
+                <li><span class="ing-amount">30g</span><span class="ing-name">Almendras o nueces</span></li>
+                <li><span class="ing-amount">1 manzana o naranja</span><span class="ing-name">Fruta (150g)</span></li>
+              </ul>
+              <div class="option-macros"><div class="macro-box"><div class="val" style="color:#f09090">16g</div><div class="lbl">Proteína</div></div><div class="macro-box"><div class="val" style="color:#f0b860">35g</div><div class="lbl">Carbos</div></div><div class="macro-box"><div class="val" style="color:#90d0f0">15g</div><div class="lbl">Grasas</div></div><div class="macro-box"><div class="val" style="color:#b8d860">~330</div><div class="lbl">kcal</div></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="meal-row">
+      <div class="meal-time-col"><span class="time-label">20:00</span><div class="meal-dot blue"></div></div>
+      <div class="meal-card-col">
+        <div class="meal-card" onclick="toggleCard(this)">
+          <div class="meal-card-header"><div class="meal-icon">⚡</div><div class="meal-info"><div class="meal-name">Pre-entreno</div><div class="meal-tagline">1h antes del gym nocturno</div><div class="macro-pills"><span class="pill pill-p">Prot 28g</span><span class="pill pill-c">Carbs 35g</span><span class="pill pill-k">~260 kcal</span></div></div><div class="expand-icon">▾</div></div>
+          <div class="meal-detail">
+            <div class="option-panel active" style="display:block">
+              <ul class="ingredient-list">
+                <li><span class="ing-amount">1 scoop (31g)</span><span class="ing-name">Gold Standard Whey con agua o leche</span></li>
+                <li><span class="ing-amount">1 banana (120g)</span><span class="ing-name">Banana</span></li>
+                <li><span class="ing-amount">3-5g</span><span class="ing-name">Creatina monohidratada</span></li>
+              </ul>
+              <div class="option-macros"><div class="macro-box"><div class="val" style="color:#f09090">28g</div><div class="lbl">Proteína</div></div><div class="macro-box"><div class="val" style="color:#f0b860">35g</div><div class="lbl">Carbos</div></div><div class="macro-box"><div class="val" style="color:#b8d860">~260</div><div class="lbl">kcal</div></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="meal-row">
+      <div class="meal-time-col"><span class="time-label">21:00</span><div class="meal-dot orange"></div></div>
+      <div class="meal-card-col"><div class="meal-card"><div class="meal-card-header"><div class="meal-icon">🏋️</div><div class="meal-info"><div class="meal-name">ENTRENO</div><div class="meal-tagline">Tu horario habitual — gym nocturno</div></div></div></div></div>
+    </div>
+    <div class="meal-row">
+      <div class="meal-time-col"><span class="time-label">22:30</span><div class="meal-dot orange"></div></div>
+      <div class="meal-card-col">
+        <div class="meal-card" onclick="toggleCard(this)">
+          <div class="meal-card-header"><div class="meal-icon">🌙</div><div class="meal-info"><div class="meal-name">Post-entreno + Cena</div><div class="meal-tagline">Ventana anabólica nocturna — INCLUIR carbos sí o sí</div><div class="macro-pills"><span class="pill pill-p">Prot 72g</span><span class="pill pill-c">Carbs 75g</span><span class="pill pill-k">~830 kcal</span></div></div><div class="expand-icon">▾</div></div>
+          <div class="meal-detail">
+            <div class="options-tabs"><button class="opt-tab active" onclick="switchOpt(this)">Batido + pollo</button><button class="opt-tab" onclick="switchOpt(this)">Batido + merluza</button></div>
+            <div class="option-panel active">
+              <ul class="ingredient-list">
+                <li><span class="ing-amount">1 scoop (31g)</span><span class="ing-name">Gold Standard Whey<span class="ing-note">Inmediato post-gym — no esperar más de 30 min</span></span></li>
+                <li><span class="ing-amount">1 banana (120g)</span><span class="ing-name">Banana</span></li>
+                <li><span class="ing-amount">200g</span><span class="ing-name">Pollo al horno</span></li>
+                <li><span class="ing-amount">150g</span><span class="ing-name">Papa o batata al horno</span></li>
+                <li><span class="ing-amount">200g</span><span class="ing-name">Mix vegetales salteados</span></li>
+              </ul>
+              <div class="prep-note">Noche de gym: los carbos en la cena son obligatorios. La síntesis proteica muscular sigue activa durante horas post-entreno y necesita combustible.</div>
+              <div class="option-macros"><div class="macro-box"><div class="val" style="color:#f09090">72g</div><div class="lbl">Proteína</div></div><div class="macro-box"><div class="val" style="color:#f0b860">75g</div><div class="lbl">Carbos</div></div><div class="macro-box"><div class="val" style="color:#b8d860">~830</div><div class="lbl">kcal</div></div></div>
+            </div>
+            <div class="option-panel">
+              <ul class="ingredient-list">
+                <li><span class="ing-amount">1 scoop (31g)</span><span class="ing-name">Gold Standard Whey</span></li>
+                <li><span class="ing-amount">220g</span><span class="ing-name">Merluza al horno</span></li>
+                <li><span class="ing-amount">70g crudo</span><span class="ing-name">Arroz integral (≈180g cocido)</span></li>
+                <li><span class="ing-amount">Ensalada</span><span class="ing-name">Rúcula + tomate cherry + aceite de oliva</span></li>
+              </ul>
+              <div class="option-macros"><div class="macro-box"><div class="val" style="color:#f09090">72g</div><div class="lbl">Proteína</div></div><div class="macro-box"><div class="val" style="color:#f0b860">70g</div><div class="lbl">Carbos</div></div><div class="macro-box"><div class="val" style="color:#b8d860">~780</div><div class="lbl">kcal</div></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- COMPRAS TAB -->
+<div id="tab-compras" class="content">
+  <div class="section-heading">Lista de compras</div>
+  <div class="section-sub">Tocá cada ítem para tacharlo. Se resetea al recargar la página.</div>
+  <div class="shop-grid" id="shopGrid"></div>
+</div>
+
+<!-- SUPLEMENTOS TAB -->
+<div id="tab-suplementos" class="content">
+  <div class="section-heading">Suplementación</div>
+  <div class="supp-card">
+    <div class="supp-badge" style="background:rgba(200,240,96,0.15)">🥛</div>
+    <div>
+      <div class="supp-title">Optimum Nutrition Gold Standard 100% Whey <span class="badge-new">NUEVO</span></div>
+      <div class="supp-detail">24g de proteína por scoop de 31g, solo 2g de azúcar, 120 kcal. Whey Isolate como fuente principal — baja en carbos y grasa.</div>
+      <div class="supp-timing">Dosis: 1 scoop pre-entreno + 1 scoop post-entreno. Días sin gym: 1 scoop en el desayuno o en el yogur.</div>
+    </div>
+  </div>
+  <div class="supp-card">
+    <div class="supp-badge" style="background:rgba(240,160,48,0.15)">⚡</div>
+    <div>
+      <div class="supp-title">Creatina Monohidratada</div>
+      <div class="supp-detail">El suplemento con más evidencia científica para ganancia de fuerza y masa muscular. Seguro y efectivo.</div>
+      <div class="supp-timing">3-5g diarios disueltos en agua o batido. Pre o post-entreno — la consistencia diaria importa más que el timing.</div>
+    </div>
+  </div>
+  <div class="supp-card">
+    <div class="supp-badge" style="background:rgba(96,200,240,0.15)">🐟</div>
+    <div>
+      <div class="supp-title">Omega 3 (aceite de pescado)</div>
+      <div class="supp-detail">2-3g de EPA+DHA diarios. Reduce inflamación post-entreno, mejora recuperación y sensibilidad anabólica.</div>
+      <div class="supp-timing">Con las comidas principales que contengan grasa.</div>
+    </div>
+  </div>
+  <div class="supp-card">
+    <div class="supp-badge" style="background:rgba(240,240,96,0.15)">☀️</div>
+    <div>
+      <div class="supp-title">Vitamina D3</div>
+      <div class="supp-detail">Importante para función muscular y síntesis proteica. Frecuentemente deficiente en personas que pasan muchas horas en interiores.</div>
+      <div class="supp-timing">1000-2000 UI diarias con una comida que tenga grasa. Consultar niveles séricos con el médico.</div>
+    </div>
+  </div>
+  <div style="margin-top:1.5rem">
+    <div class="section-heading" style="font-size:1.1rem">Receta: Granola casera ideal para yogur</div>
+    <div class="supp-card" style="flex-direction:column; gap:8px">
+      <div style="font-size:13px;color:var(--muted);line-height:1.8">
+        <b style="color:var(--text)">Ingredientes (para ~10 porciones de 50g):</b><br>
+        · 300g avena arrollada<br>
+        · 80g almendras picadas<br>
+        · 60g nueces picadas<br>
+        · 2 cdas semillas de chía<br>
+        · 2 cdas semillas de lino<br>
+        · 2 cdas aceite de coco<br>
+        · 1 cda miel<br>
+        · Canela a gusto<br><br>
+        <b style="color:var(--text)">Preparación:</b> Mezclar todo, extender en bandeja, hornear a 160°C por 20-25 min revolviendo a mitad. Guardar en frasco hermético — dura 2 semanas.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PROGRESO TAB -->
+<div id="tab-progreso" class="content">
+  <div class="section-heading">Tu situación actual vs objetivo</div>
+  <div class="body-compare">
+    <div class="compare-card">
+      <div class="compare-label">📊 Hoy — Medición 22/04/2026</div>
+      <div class="compare-item"><span class="key">Peso</span><span class="val-now">69 kg</span></div>
+      <div class="compare-item"><span class="key">Talla</span><span class="val-now">188 cm</span></div>
+      <div class="compare-item"><span class="key">Masa adiposa</span><span class="val-now">9,3% · 6,4 kg</span></div>
+      <div class="compare-item"><span class="key">Masa muscular</span><span class="val-now">49,3% · 34 kg</span></div>
+      <div class="compare-item"><span class="key">Masa ósea</span><span class="val-now">18,9% · 13 kg</span></div>
+      <div class="compare-item"><span class="key">IMC</span><span class="val-now">19,5 — Normal</span></div>
+      <div class="compare-item"><span class="key">Cintura</span><span class="val-now">74 cm</span></div>
+    </div>
+    <div class="compare-card">
+      <div class="compare-label" style="color:var(--accent)">🎯 Objetivo — Brad Pitt adaptado a 188cm</div>
+      <div class="compare-item"><span class="key">Peso</span><span class="val-target">76–78 kg</span></div>
+      <div class="compare-item"><span class="key">Talla</span><span class="val-target">188 cm</span></div>
+      <div class="compare-item"><span class="key">Masa adiposa</span><span class="val-target">7–8%</span></div>
+      <div class="compare-item"><span class="key">Masa muscular</span><span class="val-target">~38–40 kg</span></div>
+      <div class="compare-item"><span class="key">Déficit</span><span class="val-target">+4–6 kg músculo magro</span></div>
+      <div class="compare-item"><span class="key">Tiempo estimado</span><span class="val-target">6–10 meses</span></div>
+      <div class="compare-item"><span class="key">Cintura</span><span class="val-target">< 78 cm</span></div>
+    </div>
+  </div>
+  <div class="section-heading" style="font-size:1.1rem">Rutina semanal recomendada</div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:1.5rem">
+    <div style="background:var(--surface);border:1px solid var(--accent);border-radius:12px;padding:12px;text-align:center"><div style="font-size:12px;color:var(--accent);font-weight:600;text-transform:uppercase;letter-spacing:0.05em">Lunes</div><div style="font-size:14px;font-weight:500;margin:4px 0">Pecho</div><div style="font-size:11px;color:var(--muted)">+ abdominales al final</div></div>
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:12px;text-align:center"><div style="font-size:12px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:0.05em">Martes</div><div style="font-size:14px;font-weight:500;margin:4px 0">Espalda</div><div style="font-size:11px;color:var(--muted)">+ plancha 3×60s</div></div>
+    <div style="background:var(--surface);border:1px solid var(--accent);border-radius:12px;padding:12px;text-align:center"><div style="font-size:12px;color:var(--accent);font-weight:600;text-transform:uppercase;letter-spacing:0.05em">Miércoles</div><div style="font-size:14px;font-weight:500;margin:4px 0">Hombros</div><div style="font-size:11px;color:var(--muted)">+ abdominales al final</div></div>
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:12px;text-align:center"><div style="font-size:12px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:0.05em">Jueves</div><div style="font-size:14px;font-weight:500;margin:4px 0">Brazos</div><div style="font-size:11px;color:var(--muted)">+ plancha 3×60s</div></div>
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:12px;text-align:center"><div style="font-size:12px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:0.05em">Viernes</div><div style="font-size:14px;font-weight:500;margin:4px 0">Piernas</div><div style="font-size:11px;color:var(--muted)">Sentadilla + peso muerto</div></div>
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:12px;text-align:center"><div style="font-size:12px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:0.05em">Sábado</div><div style="font-size:14px;font-weight:500;margin:4px 0">Running</div><div style="font-size:11px;color:var(--muted)">8–12 km ritmo moderado</div></div>
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:12px;text-align:center"><div style="font-size:12px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:0.05em">Domingo</div><div style="font-size:14px;font-weight:500;margin:4px 0">Descanso</div><div style="font-size:11px;color:var(--muted)">O 6–8 km suave</div></div>
+  </div>
+</div>
+
+<script>
+function switchTab(tab) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.content').forEach(c => c.classList.remove('active'));
+  event.target.classList.add('active');
+  document.getElementById('tab-' + tab).classList.add('active');
+}
+
+function switchSchedule(sched) {
+  document.querySelectorAll('.sched-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.timeline').forEach(t => t.classList.remove('active'));
+  event.currentTarget.classList.add('active');
+  document.getElementById('sched-' + sched).classList.add('active');
+}
+
+function toggleCard(card) {
+  if (event.target.closest('.opt-tab') || event.target.closest('.option-panel')) return;
+  card.classList.toggle('expanded');
+}
+
+function switchOpt(btn) {
+  event.stopPropagation();
+  const tabs = btn.closest('.options-tabs');
+  const detail = btn.closest('.meal-detail');
+  tabs.querySelectorAll('.opt-tab').forEach((t, i) => {
+    t.classList.toggle('active', t === btn);
+  });
+  const idx = Array.from(tabs.querySelectorAll('.opt-tab')).indexOf(btn);
+  detail.querySelectorAll('.option-panel').forEach((p, i) => {
+    p.classList.toggle('active', i === idx);
+  });
+}
+
+const shopData = [
+  { cat: '🥩 Carnicería', color: '#f06060', items: ['Pechuga de pollo (1kg/semana)', 'Muslo de pollo sin piel (500g)', 'Bife de lomo o nalga (600g)', 'Peceto (500g)', 'Lomito magro (250g)', 'Carne picada magra (500g)'] },
+  { cat: '🐟 Pescadería', color: '#60c8f0', items: ['Merluza fresca en filetes (800g)', 'Mejillones frescos (500g)', 'Mix frutos de mar (400g)', 'Jurel o caballa fresca (400g)'] },
+  { cat: '🥦 Verdulería', color: '#c8f060', items: ['Brócoli (500g)', 'Zapallitos (500g)', 'Espinaca (300g)', 'Rúcula (200g)', 'Lechuga (1 planta)', 'Tomates cherry (500g)', 'Hongos frescos (300g)', 'Palta (4-6 unidades)', 'Banana (1 docena)', 'Naranja (1kg)', 'Manzana (6 unidades)', 'Frutillas o arándanos (300g)', 'Papa (1kg)', 'Batata (500g)', 'Albahaca fresca (1 planta)', 'Ajo (1 cabeza)'] },
+  { cat: '🛒 Supermercado', color: '#f0a030', items: ['Harina de maíz precocida (1kg)', 'Arroz integral (1kg)', 'Fideos integrales (500g)', 'Avena arrollada (500g)', 'Pan lactal integral (1 paquete)', 'Huevos (2 docenas)', 'Claras de huevo en caja (1L)', 'Yogur griego natural (1kg)', 'Yogur descremado natural (4 potes 200g)', 'Leche descremada (1L)', 'Queso tybo (200g)', 'Queso port salut light (200g)', 'Queso parmesano (100g)', 'Muzzarela light (200g)', 'Atún al natural en lata (6 unidades)', 'Aceite de oliva extra virgen (500ml)', 'Almendras (200g)', 'Nueces (200g)', 'Maní sin sal (200g)', 'Semillas de chía (200g)', 'Semillas de lino (200g)', 'Gold Standard Whey ON (1kg)', 'Creatina monohidratada (300g)', 'Aceite de coco (250ml) — para granola', 'Miel (250g) — para granola'] }
+];
+
+const grid = document.getElementById('shopGrid');
+shopData.forEach(cat => {
+  const card = document.createElement('div');
+  card.className = 'shop-cat';
+  card.innerHTML = `<div class="shop-cat-title" style="color:${cat.color}">${cat.cat}</div>` +
+    cat.items.map(item => `<div class="shop-item" onclick="this.classList.toggle('checked')"><div class="shop-check"></div><span class="shop-name">${item}</span></div>`).join('');
+  grid.appendChild(card);
+});
+</script>
+</body>
+</html>
