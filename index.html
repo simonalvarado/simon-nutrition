@@ -478,12 +478,153 @@
   }
   .water-progress-label { font-size: 12px; color: var(--muted); display: flex; justify-content: space-between; }
 
+  /* CANDE TIP */
+  .cande-tip {
+    background: linear-gradient(135deg, rgba(232,178,200,0.08), rgba(232,178,200,0.03));
+    border: 1px solid rgba(232,178,200,0.25);
+    border-radius: 10px;
+    padding: 10px 14px;
+    margin-top: 10px;
+    font-size: 12px;
+    color: #d8a8b8;
+    line-height: 1.55;
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+  }
+  .cande-tip-icon {
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    background: rgba(232,178,200,0.2);
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 700;
+    color: #e8b2c8;
+    margin-top: 1px;
+  }
+  .cande-tip-body { flex: 1; }
+  .cande-tip-body strong { color: #e8b2c8; font-weight: 600; }
+
+  /* CANDE TAB */
+  .cande-section {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 18px;
+    margin-bottom: 16px;
+  }
+  .cande-section-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: #e8b2c8;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .cande-pill {
+    background: rgba(232,178,200,0.12);
+    color: #e8b2c8;
+    font-size: 11px;
+    font-weight: 500;
+    padding: 2px 9px;
+    border-radius: 100px;
+    letter-spacing: 0.02em;
+  }
+  .cande-hero {
+    background: linear-gradient(135deg, rgba(232,178,200,0.08), rgba(96,200,240,0.04));
+    border: 1px solid rgba(232,178,200,0.2);
+    border-radius: 16px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .cande-hero-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.5rem;
+    color: #e8b2c8;
+    margin-bottom: 4px;
+  }
+  .cande-hero-sub { font-size: 13px; color: var(--muted); }
+  .cande-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+    gap: 10px;
+    margin-top: 1rem;
+  }
+  .cande-stat {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 12px;
+    text-align: center;
+  }
+  .cande-stat-val { font-size: 18px; font-weight: 600; color: #e8b2c8; font-family: 'DM Serif Display', serif; }
+  .cande-stat-lbl { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; margin-top: 2px; }
+  .timing-row {
+    display: grid;
+    grid-template-columns: 80px 1fr;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+  }
+  .timing-row:last-child { border-bottom: none; }
+  .timing-hour { color: #e8b2c8; font-weight: 600; font-size: 13px; }
+  .timing-desc { color: var(--text); }
+  .timing-desc small { color: var(--muted); display: block; font-size: 12px; margin-top: 2px; }
+  .cycle-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .cycle-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px;
+  }
+  .cycle-folicular { border-color: rgba(200,240,96,0.3); }
+  .cycle-lutea { border-color: rgba(232,178,200,0.3); }
+  .cycle-card-title { font-size: 13px; font-weight: 600; margin-bottom: 8px; }
+  .cycle-card-title.folicular { color: var(--accent); }
+  .cycle-card-title.lutea { color: #e8b2c8; }
+  .cycle-list { list-style: none; font-size: 12px; color: var(--muted); }
+  .cycle-list li { padding: 4px 0; padding-left: 14px; position: relative; line-height: 1.5; }
+  .cycle-list li::before { content: '·'; position: absolute; left: 0; color: var(--accent2); font-weight: 700; }
+  .electrolyte-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .electrolyte-item:last-child { border-bottom: none; }
+  .elec-badge {
+    width: 32px; height: 32px;
+    border-radius: 8px;
+    background: rgba(232,178,200,0.12);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    flex-shrink: 0;
+  }
+  .elec-info { flex: 1; }
+  .elec-name { font-size: 13px; font-weight: 600; margin-bottom: 2px; }
+  .elec-desc { font-size: 12px; color: var(--muted); line-height: 1.5; }
+  .snack-pill {
+    display: inline-block;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    padding: 6px 12px;
+    font-size: 12px;
+    margin: 3px;
+    color: var(--text);
+  }
+
   @media (max-width: 600px) {
-    .header { padding: 1.25rem; }
-    .tabs { padding: 1rem 1.25rem; }
-    .content { padding: 1.25rem; }
-    .meal-row { grid-template-columns: 70px 1fr; }
-    .body-compare { grid-template-columns: 1fr; }
+    .cycle-grid { grid-template-columns: 1fr; }
+    .timing-row { grid-template-columns: 70px 1fr; }
   }
 </style>
 </head>
@@ -491,14 +632,15 @@
 
 <div class="header">
   <div>
-    <div class="header-logo">Simón / Plan Nutricional</div>
-    <div class="header-sub">Objetivo: Brad Pitt Fight Club — 76 kg · 7-8% grasa</div>
+    <div class="header-logo">Simón & Cande / Plan Nutricional</div>
+    <div class="header-sub">Objetivos paralelos · Cocinar juntos, comer según cada uno</div>
   </div>
-  <div style="font-size:12px;color:var(--muted);">Actualizado Abril 2026</div>
+  <div style="font-size:12px;color:var(--muted);">Actualizado Mayo 2026</div>
 </div>
 
 <div class="tabs">
   <button class="tab-btn active" onclick="switchTab('plan')">🥗 Plan de Comidas</button>
+  <button class="tab-btn" onclick="switchTab('cande')" style="border-color:rgba(232,178,200,0.3);color:#e8b2c8">💗 Para Cande</button>
   <button class="tab-btn" onclick="switchTab('compras')">🛒 Lista de Compras</button>
   <button class="tab-btn" onclick="switchTab('agua')">💧 Hidratación</button>
   <button class="tab-btn" onclick="switchTab('suplementos')">💊 Suplementación</button>
@@ -667,6 +809,12 @@
                 <li><span class="ing-amount">1 scoop (31g)</span><span class="ing-name">Gold Standard Whey<span class="ing-note">Mezclado en el yogur o aparte con leche — suma proteína para completar</span></span></li>
                 <li><span class="ing-amount">1 cda (10g)</span><span class="ing-name">Semillas de chía<span class="ing-note">Encima del yogur</span></span></li>
               </ul>
+              <div class="cande-tip">
+                <div class="cande-tip-icon">C</div>
+                <div class="cande-tip-body">
+                  <strong>Para Cande:</strong> Este es uno de sus desayunos favoritos del plan (Días 1, 3, 5, 7, 11, 15). Su versión: 200g yogur griego + 30g granola sin azúcar + 100g frutos rojos + 1 cda de chía. <strong>Sin whey</strong> (ya cubre proteína con el yogur). Café negro al lado. ~370 kcal, 22g proteína. Lo come a las 10am rompiendo el ayuno de 12h.
+                </div>
+              </div>
               <div class="option-macros">
                 <div class="macro-box"><div class="val" style="color:#f09090">50g</div><div class="lbl">Proteína</div></div>
                 <div class="macro-box"><div class="val" style="color:#f0b860">85g</div><div class="lbl">Carbos</div></div>
@@ -682,6 +830,12 @@
                 <li><span class="ing-amount">3 rebanadas (90g)</span><span class="ing-name">Pan lactal integral<span class="ing-note">Tostadas</span></span></li>
                 <li><span class="ing-amount">½ palta (60g)</span><span class="ing-name">Palta aplastada sobre las tostadas</span></li>
               </ul>
+              <div class="cande-tip">
+                <div class="cande-tip-icon">C</div>
+                <div class="cande-tip-body">
+                  <strong>Para Cande:</strong> 2 huevos enteros (en vez de 3+3 claras), 1 rebanada de <strong>pan de masa madre</strong> tostado (en lugar de 3 de lactal), ½ palta. Podés sumar 50g de queso cottage adentro del omelette para más proteína. ~380 kcal, 24g proteína. Pan de masa madre es clave — el lactal industrial está fuera de su plan.
+                </div>
+              </div>
               <div class="option-macros">
                 <div class="macro-box"><div class="val" style="color:#f09090">42g</div><div class="lbl">Proteína</div></div>
                 <div class="macro-box"><div class="val" style="color:#f0b860">40g</div><div class="lbl">Carbos</div></div>
@@ -769,6 +923,12 @@
                 <li><span class="ing-amount">200g</span><span class="ing-name">Brócoli o zapallitos al vapor<span class="ing-note">Con limón y sal</span></span></li>
                 <li><span class="ing-amount">1 cda (10ml)</span><span class="ing-name">Aceite de oliva extra virgen<span class="ing-note">En crudo al emplatar</span></span></li>
               </ul>
+              <div class="cande-tip">
+                <div class="cande-tip-icon">C</div>
+                <div class="cande-tip-body">
+                  <strong>Para Cande:</strong> 150g de pollo (en vez de 200g), 50g de arroz integral o quinoa (en vez de 90g), y duplicar las verduras (400g de brócoli + agregar rúcula o espinaca cruda). Misma técnica de cocción, distinta proporción. Termina en ~420 kcal y 38g proteína — ideal para su almuerzo.
+                </div>
+              </div>
               <div class="option-macros">
                 <div class="macro-box"><div class="val" style="color:#f09090">50g</div><div class="lbl">Proteína</div></div>
                 <div class="macro-box"><div class="val" style="color:#f0b860">75g</div><div class="lbl">Carbos</div></div>
@@ -784,6 +944,12 @@
                 <li><span class="ing-amount">1 cda (10ml)</span><span class="ing-name">Aceite de oliva extra virgen</span></li>
                 <li><span class="ing-amount">20g</span><span class="ing-name">Queso parmesano rallado</span></li>
               </ul>
+              <div class="cande-tip">
+                <div class="cande-tip-icon">C</div>
+                <div class="cande-tip-body">
+                  <strong>Para Cande:</strong> 150g merluza, sin fideos. Reemplazar por batata al horno (150g) o espárragos + papas rústicas chicas. Sumar ensalada de rúcula con palta. Mantener AOVE pero omitir el parmesano. ~400 kcal.
+                </div>
+              </div>
               <div class="option-macros">
                 <div class="macro-box"><div class="val" style="color:#f09090">48g</div><div class="lbl">Proteína</div></div>
                 <div class="macro-box"><div class="val" style="color:#f0b860">70g</div><div class="lbl">Carbos</div></div>
@@ -800,6 +966,12 @@
                 <li><span class="ing-amount">½ palta (60g)</span><span class="ing-name">Palta en ensalada</span></li>
                 <li><span class="ing-amount">1 cda (10ml)</span><span class="ing-name">Aceite de oliva</span></li>
               </ul>
+              <div class="cande-tip">
+                <div class="cande-tip-icon">C</div>
+                <div class="cande-tip-body">
+                  <strong>Para Cande:</strong> Esta receta es casi idéntica a su Día 5 del plan. Ajustes: 150g de bife (en vez de 180g), omitir la papa (o reemplazar por 100g de batata si entrenó). Duplicar la rúcula y agregar tomates cherry extra. La palta puede ir entera (¼ es perfecto). Ver técnica de cocción en tab "Para Cande" → Cocina.
+                </div>
+              </div>
               <div class="option-macros">
                 <div class="macro-box"><div class="val" style="color:#f09090">45g</div><div class="lbl">Proteína</div></div>
                 <div class="macro-box"><div class="val" style="color:#f0b860">55g</div><div class="lbl">Carbos</div></div>
@@ -1334,6 +1506,206 @@
       </div>
     </div>
   </div>
+</div>
+
+<!-- CANDE TAB -->
+<div id="tab-cande" class="content">
+
+  <div class="cande-hero">
+    <div class="cande-hero-title">Plan de Cande 💗</div>
+    <div class="cande-hero-sub">Objetivo: reducir grasa corporal manteniendo masa muscular · Plan de Estefanía Beltrán (Onomy Wellness)</div>
+    <div class="cande-stats">
+      <div class="cande-stat"><div class="cande-stat-val">1.900-2.100</div><div class="cande-stat-lbl">kcal/día</div></div>
+      <div class="cande-stat"><div class="cande-stat-val">120-130g</div><div class="cande-stat-lbl">Proteína</div></div>
+      <div class="cande-stat"><div class="cande-stat-val">180-220g</div><div class="cande-stat-lbl">Carbos</div></div>
+      <div class="cande-stat"><div class="cande-stat-val">60-70g</div><div class="cande-stat-lbl">Grasas</div></div>
+      <div class="cande-stat"><div class="cande-stat-val">2.5-3L</div><div class="cande-stat-lbl">Agua</div></div>
+    </div>
+  </div>
+
+  <div class="cande-section">
+    <div class="cande-section-title">⏰ Su horario · Ayuno intermitente 12h</div>
+    <div class="timing-row">
+      <div class="timing-hour">10:00 AM</div>
+      <div class="timing-desc">Desayuno — rompe el ayuno con proteína + grasa + carbohidrato<small>Las opciones del Plan de Comidas (yogur griego, omelette) tienen el tip "Para Cande" para ajustar porciones</small></div>
+    </div>
+    <div class="timing-row">
+      <div class="timing-hour">14:00–15:00</div>
+      <div class="timing-desc">Almuerzo principal — comida más completa del día<small>Pollo / merluza / bife magro + verduras + carbo moderado</small></div>
+    </div>
+    <div class="timing-row">
+      <div class="timing-hour">17:30–18:30</div>
+      <div class="timing-desc">Merienda — pre o post entrenamiento<small>Yogur griego con frutos secos / 2 huevos duros / batido proteico</small></div>
+    </div>
+    <div class="timing-row">
+      <div class="timing-hour">20:30–21:30</div>
+      <div class="timing-desc">Cena — más liviana, proteína + verduras<small>Pollo, pescado o tortilla + ensalada o verduras al horno</small></div>
+    </div>
+    <div class="timing-row">
+      <div class="timing-hour">22:00</div>
+      <div class="timing-desc">Cierre de ventana alimentaria ✓<small>El ayuno hasta las 10am del día siguiente</small></div>
+    </div>
+  </div>
+
+  <div class="cande-section">
+    <div class="cande-section-title">🔄 Cómo cocinar para los dos · La regla simple</div>
+    <div style="font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:1rem">
+      Cocinen la misma base de proteína (mismo pollo, mismo bife, mismo pescado) con la misma técnica. Las diferencias van en las porciones, en los carbohidratos y en el volumen de vegetales:
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;font-size:12px">
+      <div style="background:var(--surface2);border-radius:10px;padding:12px">
+        <div style="font-weight:600;color:var(--accent);margin-bottom:8px;font-size:13px">Para Simón (volumen)</div>
+        <div style="color:var(--muted);line-height:1.6">200g proteína · 90g arroz crudo · 200g verduras · 1 cda AOVE · Batido whey post-gym</div>
+      </div>
+      <div style="background:var(--surface2);border-radius:10px;padding:12px">
+        <div style="font-weight:600;color:#e8b2c8;margin-bottom:8px;font-size:13px">Para Cande (definición)</div>
+        <div style="color:var(--muted);line-height:1.6">150g proteína · 50g arroz crudo (o sin) · 400g verduras · 1 cda AOVE · Sin whey</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cande-section">
+    <div class="cande-section-title">🌸 Su ciclo menstrual · Comer según la fase</div>
+    <div class="cycle-grid">
+      <div class="cycle-card cycle-folicular">
+        <div class="cycle-card-title folicular">Folicular · Días 1-14</div>
+        <ul class="cycle-list">
+          <li>Estrógeno en ascenso — energía alta</li>
+          <li>Mayor tolerancia a carbohidratos</li>
+          <li>Mantener plan estándar</li>
+          <li>Cravings bajos — momento ideal para consolidar hábitos</li>
+          <li>Alimentos estrella: legumbres, brócoli, frutos rojos, espinaca</li>
+        </ul>
+      </div>
+      <div class="cycle-card cycle-lutea">
+        <div class="cycle-card-title lutea">Lútea · Días 15-28</div>
+        <ul class="cycle-list">
+          <li>Progesterona alta — metabolismo +100-200 kcal/día</li>
+          <li>Cravings más intensos, posible retención</li>
+          <li>Sumar 100-150 kcal de calidad (fruta + frutos secos)</li>
+          <li>Más magnesio, calcio y cacao negro 70%+</li>
+          <li>Reducir cafeína, alcohol y sodio en exceso</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="cande-section">
+    <div class="cande-section-title">🧂 Electrolitos · Tan importantes como el agua</div>
+    <div style="font-size:13px;color:var(--muted);margin-bottom:12px;line-height:1.6">
+      Con 2.5-3L de agua diaria, sin electrolitos diluís el sodio y empeorás la retención. Su protocolo específico:
+    </div>
+    <div class="electrolyte-item">
+      <div class="elec-badge">🌅</div>
+      <div class="elec-info">
+        <div class="elec-name">Al despertar</div>
+        <div class="elec-desc">2 vasos de agua con pizca de sal marina + rodaja de limón — repone sodio nocturno y activa el sistema</div>
+      </div>
+    </div>
+    <div class="electrolyte-item">
+      <div class="elec-badge">🏋️</div>
+      <div class="elec-info">
+        <div class="elec-name">Pre-entreno (30 min antes)</div>
+        <div class="elec-desc">300-400ml de agua con pizca de sal o agua de coco natural</div>
+      </div>
+    </div>
+    <div class="electrolyte-item">
+      <div class="elec-badge">💧</div>
+      <div class="elec-info">
+        <div class="elec-name">Durante el entreno</div>
+        <div class="elec-desc">150-200ml cada 15-20 min. Si supera 60 min: bebida con electrolitos o agua de coco</div>
+      </div>
+    </div>
+    <div class="electrolyte-item">
+      <div class="elec-badge">🍌</div>
+      <div class="elec-info">
+        <div class="elec-name">Post-entreno</div>
+        <div class="elec-desc">Agua + banana o palta (potasio) + creatina + proteína — recuperación completa</div>
+      </div>
+    </div>
+    <div class="electrolyte-item">
+      <div class="elec-badge">🌙</div>
+      <div class="elec-info">
+        <div class="elec-name">Antes de dormir</div>
+        <div class="elec-desc">200-300mg de glicinato de magnesio — suplementar (la dieta sola no alcanza)</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cande-section">
+    <div class="cande-section-title">🍫 Snacks dulces funcionales · Para los antojos</div>
+    <div style="font-size:12px;color:var(--muted);margin-bottom:12px;line-height:1.6">
+      Los antojos post estimulación ovárica tienen base fisiológica (fluctuación de estrógeno y progesterona). No resistir — sustituir:
+    </div>
+    <div>
+      <span class="snack-pill">🍯 Yogur griego + miel + banana + canela</span>
+      <span class="snack-pill">🍫 Brownie de avena, banana y cacao casero</span>
+      <span class="snack-pill">🌴 Dátiles rellenos con mantequilla de almendras + cacao</span>
+      <span class="snack-pill">🍨 Nice cream: banana congelada + cacao amargo</span>
+      <span class="snack-pill">🥥 Chia pudding con leche de coco + mango</span>
+      <span class="snack-pill">🍫 2-3 cuadraditos de chocolate negro 70%+ con infusión</span>
+      <span class="snack-pill">🥣 Porridge nocturno: avena + nueces + cacao</span>
+    </div>
+  </div>
+
+  <div class="cande-section">
+    <div class="cande-section-title">👨‍🍳 Cocina compartida · Técnicas para ambos</div>
+    <div style="font-size:13px;font-weight:600;margin-bottom:8px;color:var(--text)">Bife a la plancha · Método infalible</div>
+    <div style="font-size:12px;color:var(--muted);line-height:1.7;margin-bottom:1rem">
+      Sacar la carne de la heladera 20 min antes (temperatura ambiente = cocción pareja). Calentar la plancha a fuego ALTO hasta que humee ligeramente. Sal gruesa solo en el momento de poner en la plancha — nunca antes, saca jugos. 3-4 min cada lado para término medio. No pinchar, no mover. Retirar y dejar descansar 3-5 min antes de cortar.
+    </div>
+    <div style="font-size:13px;font-weight:600;margin-bottom:8px;color:var(--text)">Verduras al horno · La técnica base</div>
+    <div style="font-size:12px;color:var(--muted);line-height:1.7;margin-bottom:12px">
+      Horno a 200°C. Cortar verduras en trozos similares. Mezclar con AOVE + sal + condimento. Bandeja con papel manteca. 25-35 min, dar vuelta a la mitad.
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;font-size:11px">
+      <div style="background:var(--surface2);border-radius:8px;padding:10px"><div style="font-weight:600;color:var(--accent);margin-bottom:3px">Mediterránea</div><div style="color:var(--muted);line-height:1.5">Zucchini + morrón + berenjena + tomate + AOVE + orégano + ajo</div></div>
+      <div style="background:var(--surface2);border-radius:8px;padding:10px"><div style="font-weight:600;color:var(--accent2);margin-bottom:3px">Especiada</div><div style="color:var(--muted);line-height:1.5">Batata + zanahoria + cebolla morada + comino + pimentón ahumado</div></div>
+      <div style="background:var(--surface2);border-radius:8px;padding:10px"><div style="font-weight:600;color:var(--accent3);margin-bottom:3px">Asiática</div><div style="color:var(--muted);line-height:1.5">Brócoli + champiñones + edamame + soja + jengibre + sésamo</div></div>
+      <div style="background:var(--surface2);border-radius:8px;padding:10px"><div style="font-weight:600;color:#e8b2c8;margin-bottom:3px">Clásica</div><div style="color:var(--muted);line-height:1.5">Papa + cebolla + ajo + romero + AOVE + limón</div></div>
+    </div>
+  </div>
+
+  <div class="cande-section">
+    <div class="cande-section-title">💊 Suplementación · Su protocolo</div>
+    <div class="supp-card" style="margin-bottom:8px">
+      <div class="supp-badge" style="background:rgba(232,178,200,0.15)">⚡</div>
+      <div>
+        <div class="supp-title">Creatina Monohidrato</div>
+        <div class="supp-detail">3-5g/día, post-entreno con carbohidratos los días de gym. Días sin gym: con desayuno o almuerzo. Sin fase de carga, sin ciclar. Beneficios para mujeres: fuerza, neuroprotección, función cognitiva.</div>
+        <div class="supp-timing">Consolida efectos a las 3-4 semanas de uso continuo</div>
+      </div>
+    </div>
+    <div class="supp-card" style="margin-bottom:8px">
+      <div class="supp-badge" style="background:rgba(232,178,200,0.15)">🌙</div>
+      <div>
+        <div class="supp-title">Magnesio (Glicinato)</div>
+        <div class="supp-detail">200-300mg nocturnos. Sueño, síntesis proteica, contracción muscular. La dieta sola no alcanza.</div>
+        <div class="supp-timing">30-45 min antes de dormir</div>
+      </div>
+    </div>
+    <div class="supp-card">
+      <div class="supp-badge" style="background:rgba(232,178,200,0.15)">🧂</div>
+      <div>
+        <div class="supp-title">Sodio + Potasio (alimentación)</div>
+        <div class="supp-detail">Sal marina al despertar, banana/palta post-entreno. No requieren cápsulas — se cubren con la dieta + la pizca de sal.</div>
+        <div class="supp-timing">Distribuir a lo largo del día</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cande-section">
+    <div class="cande-section-title">✓ Hábitos mínimos no negociables</div>
+    <ul class="cycle-list" style="font-size:13px">
+      <li>Desayuno dentro de 60-90 min de levantarte (o a las 10am como pautado)</li>
+      <li>Proteína en cada comida principal — sin excepciones</li>
+      <li>2.5L de agua mínimo · 2 vasos grandes ANTES del café al despertar</li>
+      <li>7-8 horas de sueño · el sueño ES nutrición (regula grelina, leptina, cortisol)</li>
+      <li>No saltear el almuerzo — es la comida más importante del día</li>
+      <li>10 min de caminata antes de comidas grandes — baja el cortisol pre-comida</li>
+    </ul>
+  </div>
+
 </div>
 
 <!-- AGUA TAB -->
